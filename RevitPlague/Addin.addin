@@ -1,0 +1,11 @@
+<RevitAddIns>
+    <AddIn Type="Application">
+        <Name>RevitPlague</Name>
+        <Assembly>RevitPlague/RevitPlague.dll</Assembly>
+        <AddInId>3731994d-d268-458c-a5ee-cf7389e882da</AddInId>
+        <FullClassName>RevitPlague.EntryApplication</FullClassName>
+        <VendorId>Development</VendorId>
+        <VendorDescription></VendorDescription>
+        <VendorEmail></VendorEmail>
+    </AddIn>
+</RevitAddIns>

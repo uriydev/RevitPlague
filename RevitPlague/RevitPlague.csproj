@@ -1,9 +1,145 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <NoWarn>CS8826</NoWarn>
+        <LangVersion>latest</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
+        <ImplicitUsings>true</ImplicitUsings>
+        <PublishAddinFiles>true</PublishAddinFiles>
+        <Configurations>Debug;R2022;R2024</Configurations>
     </PropertyGroup>
+
+    <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
+        <RevitVersion>2022</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R2022'))">
+        <RevitVersion>2022</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R2024'))">
+        <RevitVersion>2024</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+
+    <!-- Отключение генерации отладочных симсолов (.pdb) -->
+    <Choose>
+        <When Condition="'$(Configuration)' == 'Debug'">
+            <PropertyGroup>
+                <DebugSymbols>true</DebugSymbols>
+                <DebugType>full</DebugType>
+            </PropertyGroup>
+        </When>
+        <Otherwise>
+            <PropertyGroup>
+                <DebugSymbols>false</DebugSymbols>
+                <DebugType>none</DebugType>
+            </PropertyGroup>
+        </Otherwise>
+    </Choose>
+
+    <!-- Зависимости NuGet -->
+    <ItemGroup>
+        <PackageReference Include="WPF-UI" Version="4.0.0-rc.3" />
+
+        <!--MVVM-->
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
+
+        <!--DI-->
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+
+        <!--IOC-->
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
+    <Choose>
+        <When Condition="'$(Configuration)' == 'R2022' or '$(Configuration)' == 'Debug'">
+            <ItemGroup>
+                <PackageReference Include="UK.Revit.Api.2022" Version="2022.1.21" />
+            </ItemGroup>
+        </When>
+        <When Condition="'$(Configuration)' == 'R2024'">
+            <ItemGroup>
+                <PackageReference Include="UK.Revit.Api.2024" Version="2024.2.0" />
+            </ItemGroup>
+        </When>
+    </Choose>
+
+    <!-- Создание Run/Debug конфигурации -->
+    <PropertyGroup>
+        <StartAction>Program</StartAction>
+        <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
+        <StartArguments>/language ENG</StartArguments>
+    </PropertyGroup>
+
+    <Target Name="_GenerateAddinPackage"
+            AfterTargets="CoreBuild"
+            Condition="$(DisableAddinBundleGeneration) != 'true' AND $(RevitVersion) != ''">
+
+        <ItemGroup>
+            <RootItem Include="$(ProjectDir)*.addin"/>
+            <AddinItem Include="$(TargetDir)**\*" Exclude="**\publish\**\*"/>
+            <_ResolvedFileToPublishAlways Include="@(Content)" PublishDirectory="%(Content.PublishDirectory)" Condition="'%(Content.CopyToPublishDirectory)' == 'Always'"/>
+            <_ResolvedFileToPublishPreserveNewest Include="@(Content)" PublishDirectory="%(Content.PublishDirectory)" Condition="'%(Content.CopyToPublishDirectory)' == 'PreserveNewest'"/>
+        </ItemGroup>
+
+        <PropertyGroup>
+            <RootDir>$(TargetDir)publish\Revit $(RevitVersion) $(Configuration) addin\</RootDir>
+            <AddinDir>$(RootDir)$(AssemblyName)\</AddinDir>
+        </PropertyGroup>
+
+        <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)"/>
+        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(_ResolvedFileToPublishAlways)" SkipUnchangedFiles="false" DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishAlways.PublishDirectory)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(_ResolvedFileToPublishPreserveNewest)" SkipUnchangedFiles="true" DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishPreserveNewest.PublishDirectory)\%(RecursiveDir)"/>
+
+        <Message Text="$(AssemblyName) -> $(TargetDir)publish" Importance="high"/>
+    </Target>
+    <Target Name="_PublishRevitAddin"
+            AfterTargets="_GenerateAddinPackage"
+            Condition="$(PublishAddinFiles)">
+
+        <ItemGroup>
+            <AddinFiles Include="$(TargetDir)publish\Revit $(RevitVersion) $(Configuration) addin\**\*"/>
+        </ItemGroup>
+
+        <Copy SourceFiles="@(AddinFiles)"
+              Condition="$(PublishAddinFiles)"
+              DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)"/>
+
+        <Message Text="Publishing add-in $(AssemblyName) -> $(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName)" Importance="high"/>
+    </Target>
+
+    <Target Name="_CleanRevitAddinFolder"
+            AfterTargets="Clean"
+            Condition="$(PublishAddinFiles)">
+
+        <RemoveDir Directories="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName)"/>
+        <Delete Files="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName).addin"/>
+    </Target>
+    <Target Name="_CleanAddinPackage"
+            AfterTargets="Clean"
+            Condition="$(DisableAddinBundleGeneration) != 'true'">
+
+        <RemoveDir Directories="$(TargetDir)publish\"/>
+    </Target>
+
+    <ItemGroup>
+        <Resource Include="Resources\Icons\RibbonIcon16.png" />
+        <Resource Include="Resources\Icons\RibbonIcon32.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ApplicationDefinition Remove="App.xaml"/>
+        <Page Include="App.xaml"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Models\" />
+    </ItemGroup>
 
 </Project>
