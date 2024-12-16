@@ -14,13 +14,13 @@ public class EntryApplication : IExternalApplication
             
         string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new PushButtonData("cmdHelloWorld",
-            "Hello! World!", thisAssemblyPath, "Nuketest_01.EntryCommand");
+            "Hello! World!", thisAssemblyPath, "RevitPlague.EntryCommand");
             
         PushButton pushButton = ribbonPanel.AddItem(buttonData) as PushButton;
 
         pushButton.ToolTip = "Say hello to the entire world.";
 
-        Uri uriImage = new Uri("pack://application:,,,/Nuketest_01;component/Resources/icons/RibbonIcon32.png");
+        Uri uriImage = new Uri("pack://application:,,,/RevitPlague;component/Resources/icons/RibbonIcon32.png");
         BitmapImage largeImage = new BitmapImage(uriImage);
         pushButton.LargeImage = largeImage;
         

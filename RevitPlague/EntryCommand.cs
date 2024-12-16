@@ -3,7 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitPlague.Services.Contracts;
 
-namespace RevitPlague.Services;
+namespace RevitPlague;
 
 [Transaction(TransactionMode.Manual)]
 public class EntryCommand : IExternalCommand
