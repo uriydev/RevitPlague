@@ -26,8 +26,8 @@ public static class Host
         });
 
         //Views
-        builder.Services.AddScoped<WpfUiView>();
-        builder.Services.AddScoped<IWindow, WpfUiView>();
+        builder.Services.AddScoped<RevitPlagueView>();
+        builder.Services.AddScoped<IWindow, RevitPlagueView>();
 
         //Startup view
         // builder.Services.AddTransient<ILookupService, LookupService>();
