@@ -10,11 +10,11 @@ public class EntryApplication : IExternalApplication
     {
         #region Ribbon Panel
         
-        RibbonPanel ribbonPanel = application.CreateRibbonPanel("NewRibbonPanel");
+        RibbonPanel ribbonPanel = application.CreateRibbonPanel("Revit Plague");
             
         string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new PushButtonData("cmdHelloWorld",
-            "Hello! World!", thisAssemblyPath, "RevitPlague.EntryCommand");
+            "RevitPlague", thisAssemblyPath, "RevitPlague.EntryCommand");
             
         PushButton pushButton = ribbonPanel.AddItem(buttonData) as PushButton;
 
