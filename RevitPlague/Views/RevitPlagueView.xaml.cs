@@ -4,9 +4,9 @@ using Wpf.Ui.Controls;
 
 namespace RevitPlague.Views;
 
-public partial class WpfUiView : FluentWindow, IWindow
+public partial class RevitPlagueView : FluentWindow, IWindow
 {
-    public WpfUiView()
+    public RevitPlagueView()
     {
         InitializeComponent();
         ApplicationThemeManager.Apply(this);
