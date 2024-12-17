@@ -7,7 +7,7 @@ namespace RevitPlague.ViewModels;
 /// <summary>
 ///  Using ObservableObject automatically takes care of INotifyPropertyChanged
 /// </summary>
-public partial class AppViewModel : ObservableObject
+public partial class ManualTestViewModel : ObservableObject
 {
     private string? input;
 
