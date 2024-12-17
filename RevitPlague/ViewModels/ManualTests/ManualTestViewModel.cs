@@ -2,7 +2,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace RevitPlague.ViewModels;
+namespace RevitPlague.ViewModels.ManualTests;
 
 /// <summary>
 ///  Using ObservableObject automatically takes care of INotifyPropertyChanged
