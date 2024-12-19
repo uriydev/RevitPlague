@@ -23,19 +23,7 @@ public class EntryApplication : IExternalApplication
         #endregion
         
         Host.Start();
-#if R19
-            TaskDialog.Show("EntryApplication", "Hello Revit 2019");
-#elif R21
-            TaskDialog.Show("EntryApplication", "Hello Revit 2021");
-#elif R22
-        // TaskDialog.Show("EntryApplication", "Hello Revit 2022");
-#elif R23
-            TaskDialog.Show("EntryApplication", "Hello Revit 2023");
-#elif R24
-            // TaskDialog.Show("EntryApplication", "Hello Revit 2024");
-#elif R25
-            TaskDialog.Show("EntryApplication", "Hello Revit 2025");
-#endif
+
         return Result.Succeeded;
     }
     
