@@ -28,7 +28,7 @@ class Build : NukeBuild
             {
                 var configuration = c.Split("|")[0];
 
-                if (configuration == "Debug" || build.Contains(configuration))
+                if (configuration.Contains("Debug") || build.Contains(configuration))
                     continue;
 
                 Serilog.Log.Debug($"Configuration: {configuration}");

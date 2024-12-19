@@ -11,15 +11,11 @@ public class EntryApplication : IExternalApplication
         #region Ribbon Panel
         
         RibbonPanel ribbonPanel = application.CreateRibbonPanel("Revit Plague");
-            
         string thisAssemblyPath = Assembly.GetExecutingAssembly().Location;
         PushButtonData buttonData = new PushButtonData("cmdHelloWorld",
-            "RevitPlague", thisAssemblyPath, "RevitPlague.EntryCommand");
-            
+            "RevitPlague", thisAssemblyPath, "RevitPlague.Commands.EntryCommand");
         PushButton pushButton = ribbonPanel.AddItem(buttonData) as PushButton;
-
         pushButton.ToolTip = "Say hello to the entire world.";
-
         Uri uriImage = new Uri("pack://application:,,,/RevitPlague;component/Resources/icons/RibbonIcon32.png");
         BitmapImage largeImage = new BitmapImage(uriImage);
         pushButton.LargeImage = largeImage;
@@ -27,17 +23,17 @@ public class EntryApplication : IExternalApplication
         #endregion
         
         Host.Start();
-#if R2019
+#if R19
             TaskDialog.Show("EntryApplication", "Hello Revit 2019");
-#elif R2021
+#elif R21
             TaskDialog.Show("EntryApplication", "Hello Revit 2021");
-#elif R2022
+#elif R22
         // TaskDialog.Show("EntryApplication", "Hello Revit 2022");
-#elif R2023
+#elif R23
             TaskDialog.Show("EntryApplication", "Hello Revit 2023");
-#elif R2024
+#elif R24
             // TaskDialog.Show("EntryApplication", "Hello Revit 2024");
-#elif R2025
+#elif R25
             TaskDialog.Show("EntryApplication", "Hello Revit 2025");
 #endif
         return Result.Succeeded;

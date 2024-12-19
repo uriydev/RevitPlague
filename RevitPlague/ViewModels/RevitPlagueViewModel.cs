@@ -1,6 +1,7 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace RevitPlague.ViewModels;
 
-public class RevitPlagueViewModel
+public class RevitPlagueViewModel : ObservableObject
 {
-    
 }

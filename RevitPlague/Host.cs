@@ -2,7 +2,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RevitPlague.Services.Contracts;
+using RevitPlague.ViewModels;
 using RevitPlague.Views;
 
 namespace RevitPlague;
@@ -25,12 +25,8 @@ public static class Host
             DisableDefaults = true
         });
 
-        //Views
-        builder.Services.AddScoped<RevitPlagueView>();
-        builder.Services.AddScoped<IWindow, RevitPlagueView>();
-
-        //Startup view
-        // builder.Services.AddTransient<ILookupService, LookupService>();
+        builder.Services.AddTransient<RevitPlagueViewModel>();
+        builder.Services.AddTransient<RevitPlagueView>();
 
         _host = builder.Build();
         _host.Start();

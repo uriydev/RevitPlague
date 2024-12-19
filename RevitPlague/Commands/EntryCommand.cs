@@ -1,9 +1,9 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using RevitPlague.Services.Contracts;
+using RevitPlague.Views;
 
-namespace RevitPlague;
+namespace RevitPlague.Commands;
 
 [Transaction(TransactionMode.Manual)]
 public class EntryCommand : IExternalCommand
@@ -12,8 +12,11 @@ public class EntryCommand : IExternalCommand
     {
         try
         {
-            var window = Host.GetService<IWindow>();
-            window.ShowDialog();
+            // var window = Host.GetService<IWindow>();
+            // window.ShowDialog();
+            
+            var view = Host.GetService<RevitPlagueView>();
+            view.ShowDialog();
             
             return Result.Succeeded;
         }
