@@ -9,7 +9,7 @@ namespace RevitPlague;
 
 /// <summary>
 ///     Provides a host for the application's services and manages their lifetimes
-/// </summa
+/// </summary>
 public static class Host
 {
     private static IHost _host;
