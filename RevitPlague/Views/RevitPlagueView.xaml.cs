@@ -1,8 +1,4 @@
-using RevitPlague.ViewModels;
 using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
-using System.Windows;
-using RevitPlague.Services.Contracts;
 
 namespace RevitPlague.Views;
 
