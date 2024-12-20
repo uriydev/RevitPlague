@@ -144,6 +144,7 @@
     <ItemGroup>
         <Resource Include="Resources\Icons\RibbonIcon16.png" />
         <Resource Include="Resources\Icons\RibbonIcon32.png" />
+        <Resource Include="Views\Resources\Mainwindow.png" />
     </ItemGroup>
 
     <ItemGroup>

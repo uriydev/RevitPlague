@@ -78,6 +78,7 @@
                     x:Name="RootSnackbar" />
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
+        
         <ContentPresenter
             x:Name="RootContentDialog" />
     </Grid>

@@ -27,7 +27,7 @@ public static class Host
 
         builder.Services.AddTransient<RevitPlagueViewModel>();
         builder.Services.AddTransient<RevitPlagueView>();
-
+        
         _host = builder.Build();
         _host.Start();
     }
