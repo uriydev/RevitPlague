@@ -67,9 +67,9 @@
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIMacros" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFrameworkServices" Version="$(RevitVersion).*"/>
-        <!--        <PackageReference Include="Nice3point.Revit.Build.Tasks" Version="2.*"/>-->
-        <!--        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>-->
-        <!--        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>-->
+<!--                <PackageReference Include="Nice3point.Revit.Build.Tasks" Version="2.*"/>-->
+<!--                <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>-->
+<!--                <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>-->
         
         <!--MVVM-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
@@ -150,11 +150,6 @@
     <ItemGroup>
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Models\" />
-        <Folder Include="ViewModels\Contracts\" />
     </ItemGroup>
 
     <ItemGroup>

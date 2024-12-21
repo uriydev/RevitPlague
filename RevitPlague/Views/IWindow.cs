@@ -1,8 +1,7 @@
 using System.Windows;
 using System.Windows.Threading;
-using Visibility = System.Windows.Visibility;
 
-namespace RevitPlague.Services.Contracts;
+namespace RevitPlague.Views;
 
 public interface IWindow
 {

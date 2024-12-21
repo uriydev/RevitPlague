@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
+using Microsoft.Extensions.Hosting;
 
 namespace RevitPlague;
 
@@ -8,6 +9,8 @@ public class EntryApplication : IExternalApplication
 {
     public Result OnStartup(UIControlledApplication application)
     {
+        Host.Start();
+        
         #region Ribbon Panel
         
         RibbonPanel ribbonPanel = application.CreateRibbonPanel("Revit Plague");
@@ -22,8 +25,6 @@ public class EntryApplication : IExternalApplication
         
         #endregion
         
-        Host.Start();
-
         return Result.Succeeded;
     }
     

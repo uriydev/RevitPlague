@@ -1,9 +1,13 @@
 using System.IO;
 using System.Reflection;
+using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RevitPlague.Services;
 using RevitPlague.ViewModels;
-using RevitPlague.Views;
+using RevitPlague.Views.Pages;
+using Wpf.Ui;
+using MainWindow = RevitPlague.Views.MainWindow;
 
 namespace RevitPlague;
 
@@ -24,12 +28,32 @@ public static class Host
             ContentRootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly()!.Location),
             DisableDefaults = true
         });
-
-        builder.Services.AddTransient<RevitPlagueViewModel>();
-        builder.Services.AddTransient<RevitPlagueView>();
+        
+        builder.Services.AddScoped<IPageService, PageService>();
+        builder.Services.AddScoped<IThemeService, ThemeService>();
+        builder.Services.AddScoped<ITaskBarService, TaskBarService>();
+        builder.Services.AddScoped<INavigationService, NavigationService>();
+        builder.Services.AddScoped<INavigationWindow, MainWindow>();
+        builder.Services.AddScoped<MainWindowViewModel>();
+        
+        builder.Services.AddScoped<DashboardPage>();
+        builder.Services.AddScoped<DashboardViewModel>();
+        builder.Services.AddScoped<DataPage>();
+        builder.Services.AddScoped<DataViewModel>();
+        builder.Services.AddScoped<SettingsPage>();
+        builder.Services.AddScoped<SettingsViewModel>();
         
         _host = builder.Build();
         _host.Start();
+    }
+
+    /// <summary>
+    ///     Starts the host proxy and configures the application's services
+    /// </summary>
+    public static void StartProxy(IHost host)
+    {
+        _host = host;
+        host.Start();
     }
 
     /// <summary>
