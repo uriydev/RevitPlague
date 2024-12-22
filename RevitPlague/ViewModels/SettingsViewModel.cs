@@ -4,7 +4,7 @@ using Wpf.Ui.Controls;
 
 namespace RevitPlague.ViewModels;
 
-public partial class SettingsViewModel : ObservableObject, INavigationAware
+public sealed partial class SettingsViewModel : ObservableObject, INavigationAware
 {
     private bool _isInitialized = false;
 

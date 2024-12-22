@@ -5,7 +5,7 @@ using Wpf.Ui.Controls;
 
 namespace RevitPlague.ViewModels;
 
-public partial class DataViewModel : ObservableObject, INavigationAware
+public sealed partial class DataViewModel : ObservableObject, INavigationAware
 {
     private bool _isInitialized = false;
 

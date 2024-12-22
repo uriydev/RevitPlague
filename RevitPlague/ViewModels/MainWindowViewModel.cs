@@ -5,7 +5,7 @@ using Wpf.Ui.Controls;
 
 namespace RevitPlague.ViewModels;
 
-public partial class MainWindowViewModel : ObservableObject
+public sealed partial class MainWindowViewModel : ObservableObject
 {
     [ObservableProperty]
     private ObservableCollection<NavigationViewItem> _navigationItems;
