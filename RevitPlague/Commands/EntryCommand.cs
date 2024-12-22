@@ -17,11 +17,8 @@ public class EntryCommand : IExternalCommand
 {
     public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
-        // var mainWindow = Host.GetService<MainWindow>() as Window;
-        // var mainWindow = Host.GetService<IWindow>() as Window;
-        
-        // mainWindow.ShowDialog();
-        // mainWindow.Show();
+        // var view = Host.GetService<MainWindow>();
+        // view.Show();
         
         Host.GetService<IPlagueService>().Show<DashboardPage>();
 

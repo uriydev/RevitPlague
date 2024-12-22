@@ -85,8 +85,6 @@ public sealed class PlagueService : IPlagueService
             dispatcher = Dispatcher.FromThread(thread);
         }
         
-        // We must yield
-        // Sometimes the Dispatcher is unavailable for current thread
         Thread.Sleep(1);
         
         _dispatcher = dispatcher;
@@ -97,7 +95,6 @@ public sealed class PlagueService : IPlagueService
         private Window _owner;
         private Task _activeTask;
         private readonly IServiceScope _scope;
-        // private readonly ISnoopVisualService _visualService;
         private readonly INavigationService _navigationService;
         private readonly Window _window;
         
@@ -106,7 +103,6 @@ public sealed class PlagueService : IPlagueService
             _scope = scopeFactory.CreateScope();
             
             _window = (Window) _scope.ServiceProvider.GetRequiredService<IWindow>();
-            // _visualService = _scope.ServiceProvider.GetRequiredService<ISnoopVisualService>();
             _navigationService = _scope.ServiceProvider.GetRequiredService<INavigationService>();
             
             _window.Closed += (_, _) => _scope.Dispose();

@@ -16,66 +16,41 @@ namespace RevitPlague;
 /// </summary>
 public static class Host
 {
-    private static IHost _host;
-
+    private static IServiceProvider _serviceProvider;
+    
     /// <summary>
     ///     Starts the host and configures the application's services
     /// </summary>
     public static void Start()
     {
-        var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder(new HostApplicationBuilderSettings
-        {
-            ContentRootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly()!.Location),
-            DisableDefaults = true
-        });
-        
-        // builder.Services.AddScoped<IPageService, PageService>();
+        var services = new ServiceCollection();
         
         // Theme manipulation
-        builder.Services.AddScoped<IThemeService, ThemeService>();
+        // services.AddSingleton<IThemeService, ThemeService>();
         
         // TaskBar manipulation
-        builder.Services.AddScoped<ITaskBarService, TaskBarService>();
+        // services.AddSingleton<ITaskBarService, TaskBarService>();
         
         // Service containing navigation, same as INavigationWindow... but without window
-        builder.Services.AddScoped<INavigationService, NavigationService>();
+        services.AddScoped<INavigationService, NavigationService>();
         
         // Main window with navigation
-        // builder.Services.AddScoped<INavigationWindow, MainWindow>();
-        // builder.Services.AddTransient<MainWindow>();
-        builder.Services.AddScoped<IWindow, MainWindow>();
-        builder.Services.AddScoped<MainWindowViewModel>();
+        services.AddScoped<IWindow, MainWindow>();
+        services.AddScoped<MainWindowViewModel>();
+        // services.AddTransient<MainWindow>();
         
         // Views and ViewModels
-        builder.Services.AddScoped<DashboardPage>();
-        builder.Services.AddScoped<DashboardViewModel>();
-        builder.Services.AddScoped<DataPage>();
-        builder.Services.AddScoped<DataViewModel>();
-        builder.Services.AddScoped<SettingsPage>();
-        builder.Services.AddScoped<SettingsViewModel>();
+        services.AddTransient<DashboardPage>();
+        services.AddTransient<DashboardViewModel>();
+        services.AddScoped<DataPage>();
+        services.AddScoped<DataViewModel>();
+        services.AddTransient<SettingsPage>();
+        services.AddTransient<SettingsViewModel>();
         
         //Startup view
-        builder.Services.AddScoped<IPlagueService, PlagueService>();
+        services.AddTransient<IPlagueService, PlagueService>();
         
-        _host = builder.Build();
-        _host.Start();
-    }
-
-    /// <summary>
-    ///     Starts the host proxy and configures the application's services
-    /// </summary>
-    public static void StartProxy(IHost host)
-    {
-        _host = host;
-        host.Start();
-    }
-
-    /// <summary>
-    ///     Stops the host and handle <see cref="IHostedService"/> services
-    /// </summary>
-    public static void Stop()
-    {
-        _host.StopAsync().GetAwaiter().GetResult();
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     /// <summary>
@@ -85,6 +60,6 @@ public static class Host
     /// <exception cref="System.InvalidOperationException">There is no service of type <typeparamref name="T"/></exception>
     public static T GetService<T>() where T : class
     {
-        return _host.Services.GetRequiredService<T>();
+        return _serviceProvider.GetRequiredService<T>();
     }
 }
