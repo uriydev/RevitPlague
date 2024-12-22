@@ -28,20 +28,29 @@ public static class Host
             DisableDefaults = true
         });
         
-        builder.Services.AddScoped<IPageService, PageService>();
-        builder.Services.AddScoped<IThemeService, ThemeService>();
-        builder.Services.AddScoped<ITaskBarService, TaskBarService>();
-        builder.Services.AddScoped<INavigationService, NavigationService>();
-        // builder.Services.AddScoped<INavigationWindow, MainWindow>();
-        builder.Services.AddScoped<MainWindow>();
-        builder.Services.AddScoped<MainWindowViewModel>();
+        // builder.Services.AddScoped<IPageService, PageService>();
         
-        builder.Services.AddScoped<DashboardPage>();
-        builder.Services.AddScoped<DashboardViewModel>();
-        builder.Services.AddScoped<DataPage>();
-        builder.Services.AddScoped<DataViewModel>();
-        builder.Services.AddScoped<SettingsPage>();
-        builder.Services.AddScoped<SettingsViewModel>();
+        // Theme manipulation
+        builder.Services.AddSingleton<IThemeService, ThemeService>();
+        
+        // TaskBar manipulation
+        builder.Services.AddSingleton<ITaskBarService, TaskBarService>();
+        
+        // Service containing navigation, same as INavigationWindow... but without window
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
+        
+        // Main window with navigation
+        // builder.Services.AddScoped<INavigationWindow, MainWindow>();
+        builder.Services.AddTransient<MainWindow>();
+        builder.Services.AddSingleton<MainWindowViewModel>();
+        
+        // Views and ViewModels
+        builder.Services.AddSingleton<DashboardPage>();
+        builder.Services.AddSingleton<DashboardViewModel>();
+        builder.Services.AddSingleton<DataPage>();
+        builder.Services.AddSingleton<DataViewModel>();
+        builder.Services.AddSingleton<SettingsPage>();
+        builder.Services.AddSingleton<SettingsViewModel>();
         
         _host = builder.Build();
         _host.Start();

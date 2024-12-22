@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Threading;
 
-namespace RevitPlague.Views;
+namespace RevitPlague.Services.Contracts;
 
 public interface IWindow
 {

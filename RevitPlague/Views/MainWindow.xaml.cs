@@ -28,39 +28,43 @@ public partial class MainWindow
         //
     }
     
-    // public INavigationView GetNavigation() => RootNavigation;
-
-    // public bool Navigate(Type pageType) => RootNavigation.Navigate(pageType);
-    
-
-    // public void SetPageService(IPageService pageService)
-    // {
-    //     throw new NotImplementedException();
-    // }
     public void SetPageService(IPageService pageService) => RootNavigation.SetPageService(pageService);
 
     public void ShowWindow() => Show();
 
     public void CloseWindow() => Close();
 
-    /// <summary>
-    /// Raises the closed event.
-    /// </summary>
+    protected override void OnActivated(EventArgs args)
+    {
+        base.OnActivated(args);
+        // Wpf.Ui.Application.MainWindow = this; // N3P
+        UiApplication.Current.MainWindow = this;
+    }
+    
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
-
-        // Make sure that closing this window will begin the process of closing the application.
-        Application.Current.Shutdown();
+        // Application.Current.Shutdown();
+        UiApplication.Current.Shutdown();
+        // Wpf.Ui.Application.Windows.Remove(this); // N3P
     }
 
-    // INavigationView INavigationWindow.GetNavigation()
-    // {
-    //     throw new NotImplementedException();
-    // }
+    /* PAST
+    public INavigationView GetNavigation() => RootNavigation;
+    public bool Navigate(Type pageType) => RootNavigation.Navigate(pageType);
+    public void SetPageService(IPageService pageService)
+    {
+        throw new NotImplementedException();
+    }
+    
+    INavigationView INavigationWindow.GetNavigation()
+    {
+        throw new NotImplementedException();
+    }
 
-    // public void SetServiceProvider(IServiceProvider serviceProvider)
-    // {
-    //     throw new NotImplementedException();
-    // }
+    public void SetServiceProvider(IServiceProvider serviceProvider)
+    {
+        throw new NotImplementedException();
+    }
+    */
 }
