@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using RevitPlague.Services.Contracts;
 using RevitPlague.ViewModels;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
@@ -8,7 +9,8 @@ using Wpf.Ui.Controls;
 namespace RevitPlague.Views;
 
 // public partial class MainWindow : INavigationWindow
-public partial class MainWindow
+// public partial class MainWindow
+public partial class MainWindow : FluentWindow, IWindow
 {
     public MainWindowViewModel ViewModel { get; }
 
@@ -22,18 +24,12 @@ public partial class MainWindow
         DataContext = this;
         // Appearance.SystemThemeWatcher.Watch(this);
         InitializeComponent();
-        //
         // SetPageService(pageService);
         navigationService.SetNavigationControl(RootNavigation);
-        //
     }
     
-    public void SetPageService(IPageService pageService) => RootNavigation.SetPageService(pageService);
-
-    public void ShowWindow() => Show();
-
-    public void CloseWindow() => Close();
-
+    // public void SetPageService(IPageService pageService) => RootNavigation.SetPageService(pageService);
+    
     protected override void OnActivated(EventArgs args)
     {
         base.OnActivated(args);

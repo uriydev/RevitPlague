@@ -9,8 +9,8 @@ public interface IWindow
     Visibility Visibility { get; set; }
     Dispatcher Dispatcher { get; }
     
-    void EnableSizeTracking();
-    void DisableSizeTracking();
+    // void EnableSizeTracking();
+    // void DisableSizeTracking();
     
     event RoutedEventHandler Loaded;
 }

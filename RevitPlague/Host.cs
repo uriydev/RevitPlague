@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RevitPlague.Services;
+using RevitPlague.Services.Contracts;
 using RevitPlague.ViewModels;
 using RevitPlague.Views.Pages;
 using Wpf.Ui;
@@ -31,26 +32,30 @@ public static class Host
         // builder.Services.AddScoped<IPageService, PageService>();
         
         // Theme manipulation
-        builder.Services.AddSingleton<IThemeService, ThemeService>();
+        builder.Services.AddScoped<IThemeService, ThemeService>();
         
         // TaskBar manipulation
-        builder.Services.AddSingleton<ITaskBarService, TaskBarService>();
+        builder.Services.AddScoped<ITaskBarService, TaskBarService>();
         
         // Service containing navigation, same as INavigationWindow... but without window
-        builder.Services.AddSingleton<INavigationService, NavigationService>();
+        builder.Services.AddScoped<INavigationService, NavigationService>();
         
         // Main window with navigation
         // builder.Services.AddScoped<INavigationWindow, MainWindow>();
-        builder.Services.AddTransient<MainWindow>();
-        builder.Services.AddSingleton<MainWindowViewModel>();
+        // builder.Services.AddTransient<MainWindow>();
+        builder.Services.AddScoped<IWindow, MainWindow>();
+        builder.Services.AddScoped<MainWindowViewModel>();
         
         // Views and ViewModels
-        builder.Services.AddSingleton<DashboardPage>();
-        builder.Services.AddSingleton<DashboardViewModel>();
-        builder.Services.AddSingleton<DataPage>();
-        builder.Services.AddSingleton<DataViewModel>();
-        builder.Services.AddSingleton<SettingsPage>();
-        builder.Services.AddSingleton<SettingsViewModel>();
+        builder.Services.AddScoped<DashboardPage>();
+        builder.Services.AddScoped<DashboardViewModel>();
+        builder.Services.AddScoped<DataPage>();
+        builder.Services.AddScoped<DataViewModel>();
+        builder.Services.AddScoped<SettingsPage>();
+        builder.Services.AddScoped<SettingsViewModel>();
+        
+        //Startup view
+        builder.Services.AddScoped<IPlagueService, PlagueService>();
         
         _host = builder.Build();
         _host.Start();
