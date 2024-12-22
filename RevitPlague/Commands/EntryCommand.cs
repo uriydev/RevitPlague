@@ -1,8 +1,11 @@
+using System.Windows;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using RevitPlague.Services;
+using RevitPlague.ViewModels;
 using RevitPlague.Views;
+using Wpf.Ui;
 
 namespace RevitPlague.Commands;
 
@@ -15,6 +18,11 @@ public class EntryCommand : IExternalCommand
     {
         try
         {
+            // var mainViewModel = new MainWindowViewModel();
+            // var win = new MainWindow(mainViewModel);
+            // win.ShowDialog();
+            var mainWindow = Host.GetService<MainWindow>() as Window;
+            mainWindow.Show();
             // Получаем окно из контейнера зависимостей
             // var view = Host.GetService<ILookupService>();
             

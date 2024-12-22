@@ -1,6 +1,5 @@
 using System.IO;
 using System.Reflection;
-using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RevitPlague.Services;
@@ -33,7 +32,8 @@ public static class Host
         builder.Services.AddScoped<IThemeService, ThemeService>();
         builder.Services.AddScoped<ITaskBarService, TaskBarService>();
         builder.Services.AddScoped<INavigationService, NavigationService>();
-        builder.Services.AddScoped<INavigationWindow, MainWindow>();
+        // builder.Services.AddScoped<INavigationWindow, MainWindow>();
+        builder.Services.AddScoped<MainWindow>();
         builder.Services.AddScoped<MainWindowViewModel>();
         
         builder.Services.AddScoped<DashboardPage>();
