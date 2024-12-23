@@ -1,5 +1,6 @@
 using RevitPlague.Services.Contracts;
 using Wpf.Ui;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace RevitPlague.Views;
@@ -11,8 +12,11 @@ public partial class MainWindow : FluentWindow, IWindow
     )
     {
         DataContext = this;
-        // Wpf.Ui.Appearance.SystemThemeWatcher.Watch(this);
+        
         InitializeComponent();
+        SystemThemeWatcher.Watch(this);
+        ApplicationThemeManager.Apply(this);
+        
         navigationService.SetNavigationControl(RootNavigation);
     }
     
