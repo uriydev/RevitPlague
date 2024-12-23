@@ -1,7 +1,4 @@
-using System.IO;
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using RevitPlague.Services;
 using RevitPlague.Services.Contracts;
 using RevitPlague.ViewModels;
@@ -26,18 +23,16 @@ public static class Host
         var services = new ServiceCollection();
         
         // Theme manipulation
-        // services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IThemeService, ThemeService>();
         
         // TaskBar manipulation
-        // services.AddSingleton<ITaskBarService, TaskBarService>();
+        services.AddSingleton<ITaskBarService, TaskBarService>();
         
         // Service containing navigation, same as INavigationWindow... but without window
         services.AddScoped<INavigationService, NavigationService>();
         
         // Main window with navigation
         services.AddScoped<IWindow, MainWindow>();
-        services.AddScoped<MainWindowViewModel>();
-        // services.AddTransient<MainWindow>();
         
         // Views and ViewModels
         services.AddTransient<DashboardPage>();

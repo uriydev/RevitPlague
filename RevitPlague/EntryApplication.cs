@@ -30,8 +30,6 @@ public class EntryApplication : IExternalApplication
     
     public Result OnShutdown(UIControlledApplication application)
     {
-        // Host.Stop();
-        
         return Result.Succeeded;
     }
 }
