@@ -33,6 +33,7 @@ public static class Host
         
         // Main window with navigation
         services.AddScoped<IWindow, MainWindow>();
+        // services.AddScoped<MainWindow>();
         
         // Views and ViewModels
         services.AddTransient<DashboardPage>();
