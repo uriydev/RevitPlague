@@ -16,7 +16,7 @@ public partial class MainView
         ApplicationThemeManager.Apply(this);
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
 
-        this.Unloaded += (s, e) =>
+        Unloaded += (s, e) =>
         {
             ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
         };
@@ -31,11 +31,7 @@ public partial class MainView
             RootNavigation.SetPageService(pageService);
             RootNavigation.Navigate(typeof(DataPage));
 
-            Wpf.Ui.Appearance.SystemThemeWatcher.Watch(
-                this,                                    // Window class
-                Wpf.Ui.Controls.WindowBackdropType.Mica, // Background type
-                true                                     // Whether to change accents automatically
-            );
+            SystemThemeWatcher.Watch(this);
         };
     }
 

@@ -10,6 +10,7 @@ public partial class DataPage : INavigableView<ViewModels.DataViewModel>
         ViewModel = viewModel;
         InitializeComponent();
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
+        ApplicationThemeManager.Apply(this);
         
         // Устанавливаем DataContext в ViewModel
         DataContext = ViewModel;

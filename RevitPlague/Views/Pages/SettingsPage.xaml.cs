@@ -10,6 +10,7 @@ public partial class SettingsPage : INavigableView<ViewModels.SettingsViewModel>
         ViewModel = viewModel;
         InitializeComponent();
         DataContext = this;
+        ApplicationThemeManager.Apply(this);
 
         // Подписка на событие изменения темы
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
@@ -23,12 +24,4 @@ public partial class SettingsPage : INavigableView<ViewModels.SettingsViewModel>
         // Применение темы для страницы
         ApplicationThemeManager.Apply(this);
     }
-
-    // Обработчик для отписки от события при закрытии страницы
-    // protected override void OnClosed(EventArgs e)
-    // {
-    //     // Отписываемся от события при закрытии страницы
-    //     ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
-    //     base.OnClosed(e);
-    // }
 }
