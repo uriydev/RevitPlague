@@ -2,25 +2,21 @@ using Microsoft.Extensions.DependencyInjection;
 using RevitPlague.Services;
 using RevitPlague.Services.Contracts;
 using RevitPlague.ViewModels;
+using RevitPlague.Views;
 using RevitPlague.Views.Pages;
 using Wpf.Ui;
-using MainWindow = RevitPlague.Views.MainWindow;
 
 namespace RevitPlague;
 
-/// <summary>
-///     Provides a host for the application's services and manages their lifetimes
-/// </summary>
 public static class Host
 {
     private static IServiceProvider _serviceProvider;
     
-    /// <summary>
-    ///     Starts the host and configures the application's services
-    /// </summary>
     public static void Start()
     {
         var services = new ServiceCollection();
+        
+        services.AddSingleton<IPageService, PageService>();
         
         // Theme manipulation
         services.AddSingleton<IThemeService, ThemeService>();
@@ -32,7 +28,9 @@ public static class Host
         services.AddScoped<INavigationService, NavigationService>();
         
         // Main window with navigation
-        services.AddScoped<IWindow, MainWindow>();
+        // services.AddScoped<IWindow, MainWindow>();
+        services.AddScoped<MainView>();
+        services.AddScoped<MainWindowViewModel>();
         // services.AddScoped<MainWindow>();
         
         // Views and ViewModels
@@ -48,12 +46,7 @@ public static class Host
         
         _serviceProvider = services.BuildServiceProvider();
     }
-
-    /// <summary>
-    ///     Get service of type <typeparamref name="T"/>
-    /// </summary>
-    /// <typeparam name="T">The type of service object to get</typeparam>
-    /// <exception cref="System.InvalidOperationException">There is no service of type <typeparamref name="T"/></exception>
+    
     public static T GetService<T>() where T : class
     {
         return _serviceProvider.GetRequiredService<T>();

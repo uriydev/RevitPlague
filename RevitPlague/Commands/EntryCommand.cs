@@ -17,9 +17,14 @@ public class EntryCommand : IExternalCommand, IExternalCommandAvailability
         // var view = Host.GetService<MainWindow>(); //(2)
         // view.Show(); //(2)
         
-        UIApplication uiapp = commandData.Application;
-        new MainView().Show();
-
+        // UIApplication uiapp = commandData.Application;
+        // new MainView().Show();
+        
+        // var view = Host.GetService<MainView>(); //(2)
+        // view.Show(); //(2)
+        
+        var view = Host.GetService<MainView>(); //(3)
+        view.Show(); //(3)
         return Result.Succeeded;
     }
     

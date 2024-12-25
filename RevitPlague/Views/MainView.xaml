@@ -4,24 +4,68 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:local="clr-namespace:RevitPlague.Views"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:pages="clr-namespace:RevitPlague.Views.Pages"
+                 xmlns:viewModels="clr-namespace:RevitPlague.ViewModels"
+                 d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Auto"
+                 d:DesignHeight="300"
+                 d:DesignWidth="200"
+                 MinWidth="644"
+                 MinHeight="371"
                  mc:Ignorable="d">
 
-    <StackPanel>
-        <ui:TitleBar Title="WPF UI" />
-        <ui:Card Margin="8">
-            <ui:Button Content="Change Theme"
-                       Command="{Binding CommandChangeTheme}"
-                       Icon="{ui:SymbolIcon Fluent24}" />
-        </ui:Card>
-        
-        <ListBox ScrollViewer.CanContentScroll="False">
-            <ListBoxItem>Элемент 1</ListBoxItem>
-            <ListBoxItem>Элемент 2</ListBoxItem>
-            <ListBoxItem>Элемент 3</ListBoxItem>
-        </ListBox>
-    </StackPanel>
+    <Grid>
+        <!-- TitleBar -->
+        <ui:TitleBar Title="WPF UI" Margin="42,0,0,0" />
+
+        <!-- NavigationView -->
+        <ui:NavigationView 
+            x:Name="RootNavigation" 
+            MenuItemsSource="{Binding NavigationItems}">
+            
+            <!-- Search Box -->
+            <ui:NavigationView.AutoSuggestBox>
+                <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
+                    <ui:AutoSuggestBox.Icon>
+                        <ui:IconSourceElement>
+                            <ui:SymbolIconSource Symbol="Search24" />
+                        </ui:IconSourceElement>
+                    </ui:AutoSuggestBox.Icon>
+                </ui:AutoSuggestBox>
+            </ui:NavigationView.AutoSuggestBox>
+            
+            <!-- Header -->
+            <ui:NavigationView.Header>
+                <ui:BreadcrumbBar
+                    Margin="42,32,0,0"
+                    FontSize="28"
+                    FontWeight="DemiBold" />
+            </ui:NavigationView.Header>
+            
+            <!-- Menu Items -->
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem Content="Dashboard" TargetPageType="{x:Type pages:DashboardPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Home24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem Content="Data" TargetPageType="{x:Type pages:DataPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="DataHistogram24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+            
+            <!-- Footer Menu Items -->
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem Content="Settings" TargetPageType="{x:Type pages:SettingsPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Settings24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.FooterMenuItems>
+        </ui:NavigationView>
+    </Grid>
 </ui:FluentWindow>

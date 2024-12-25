@@ -23,6 +23,11 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 Content = "Settings",
                 TargetPageType = typeof(SettingsPage)
+            },
+            new NavigationViewItem
+            {
+                Content = "Dashboard",
+                TargetPageType = typeof(DashboardPage)
             }
         };
     }

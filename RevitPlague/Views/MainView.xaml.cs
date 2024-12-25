@@ -1,55 +1,47 @@
-using System.Windows;
-using CommunityToolkit.Mvvm.Input;
+using RevitPlague.ViewModels;
+using RevitPlague.Views.Pages;
+using Wpf.Ui;
 using Wpf.Ui.Appearance;
 
 namespace RevitPlague.Views;
 
 public partial class MainView
 {
-    public IRelayCommand CommandChangeTheme { get; private set; }
-
-    public MainView()
+    public MainView(IPageService pageService, MainWindowViewModel model)
     {
-        CommandChangeTheme = new RelayCommand(() =>
-        {
-            var theme = ApplicationThemeManager.GetAppTheme() != ApplicationTheme.Light ? ApplicationTheme.Light : ApplicationTheme.Dark;
-            ApplicationThemeManager.Apply(theme);
-        });
-
+        DataContext = model;
         InitializeComponent();
-        InitializeWindow();
 
+        // Применение темы при создании окна
         ApplicationThemeManager.Apply(this);
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
+
         this.Unloaded += (s, e) =>
         {
             ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
         };
 
-        this.KeyDown += (s, e) =>
+        // Навигация и установка PageService
+        Loaded += (sender, args) =>
         {
-            if (e.Key == System.Windows.Input.Key.Escape)
-            {
-                this.Close();
-            }
+            // Проверка RootNavigation
+            if (RootNavigation == null)
+                throw new InvalidOperationException("RootNavigation is not initialized.");
+            
+            RootNavigation.SetPageService(pageService);
+            RootNavigation.Navigate(typeof(DataPage));
+
+            Wpf.Ui.Appearance.SystemThemeWatcher.Watch(
+                this,                                    // Window class
+                Wpf.Ui.Controls.WindowBackdropType.Mica, // Background type
+                true                                     // Whether to change accents automatically
+            );
         };
     }
 
     private void ApplicationThemeManager_Changed(ApplicationTheme currentApplicationTheme, System.Windows.Media.Color systemAccent)
     {
+        // Применение темы при изменении
         ApplicationThemeManager.Apply(this);
     }
-
-    #region InitializeWindow
-    private void InitializeWindow()
-    {
-        this.ShowInTaskbar = false;
-        this.Height = 320;
-        this.Width = 480;
-        this.MinHeight = 160;
-        this.MinWidth = 200;
-        this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        new System.Windows.Interop.WindowInteropHelper(this) { Owner = Autodesk.Windows.ComponentManager.ApplicationWindow };
-    }
-    #endregion
 }
