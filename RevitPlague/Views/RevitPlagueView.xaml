@@ -1,4 +1,4 @@
-<ui:FluentWindow x:Class="RevitPlague.Views.MainView"
+<ui:FluentWindow x:Class="RevitPlague.Views.RevitPlagueView"
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,15 +13,12 @@
                  MinHeight="371">
 
     <Grid>
-        <!-- TitleBar -->
         <ui:TitleBar Title="Revit Plague" Margin="42,0,0,0" />
 
-        <!-- NavigationView -->
         <ui:NavigationView x:Name="RootNavigation" 
                            FooterMenuItemsSource="{Binding NavigationFooter}"
                            MenuItemsSource="{Binding NavigationItems}">
 
-            <!-- Search Box -->
             <ui:NavigationView.AutoSuggestBox>
                 <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
                     <ui:AutoSuggestBox.Icon>
@@ -32,7 +29,6 @@
                 </ui:AutoSuggestBox>
             </ui:NavigationView.AutoSuggestBox>
 
-            <!-- Header -->
             <ui:NavigationView.Header>
                 <ui:BreadcrumbBar Margin="42,32,0,0" 
                                   FontSize="28" 

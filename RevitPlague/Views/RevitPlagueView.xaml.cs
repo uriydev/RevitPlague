@@ -5,9 +5,9 @@ using Wpf.Ui.Appearance;
 
 namespace RevitPlague.Views;
 
-public partial class MainView
+public partial class RevitPlagueView
 {
-    public MainView(IPageService pageService, MainWindowViewModel model)
+    public RevitPlagueView(IPageService pageService, MainWindowViewModel model)
     {
         DataContext = model;
         InitializeComponent();

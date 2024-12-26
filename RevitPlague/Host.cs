@@ -25,19 +25,17 @@ public static class Host
         services.AddSingleton<ITaskBarService, TaskBarService>();
         
         // Service containing navigation, same as INavigationWindow... but without window
-        services.AddScoped<INavigationService, NavigationService>();
+        services.AddTransient<INavigationService, NavigationService>();
         
         // Main window with navigation
-        // services.AddScoped<IWindow, MainWindow>();
-        services.AddScoped<MainView>();
-        services.AddScoped<MainWindowViewModel>();
-        // services.AddScoped<MainWindow>();
+        services.AddTransient<RevitPlagueView>();
+        services.AddTransient<MainWindowViewModel>();
         
         // Views and ViewModels
         services.AddTransient<DashboardPage>();
         services.AddTransient<DashboardViewModel>();
-        services.AddScoped<DataPage>();
-        services.AddScoped<DataViewModel>();
+        services.AddTransient<DataPage>();
+        services.AddTransient<DataViewModel>();
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
         
