@@ -1,39 +1,57 @@
-<ui:FluentWindow x:Class="RevitPlague.Views.RevitPlagueView"
-                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                 xmlns:viewModels="clr-namespace:RevitPlague.ViewModels"
-                 d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
-                 mc:Ignorable="d"
-                 ExtendsContentIntoTitleBar="True"
-                 WindowBackdropType="Auto"
-                 MinWidth="644"
-                 MinHeight="371">
-
+<ui:FluentWindow 
+    x:Class="RevitPlague.Views.RevitPlagueView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:viewModels="clr-namespace:RevitPlague.ViewModels"
+    xmlns:pages="clr-namespace:RevitPlague.Views.Pages"
+    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
+    mc:Ignorable="d"
+    ExtendsContentIntoTitleBar="True"
+    WindowBackdropType="Auto"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    MinWidth="550"
+    MinHeight="325">
+    
     <Grid>
-        <ui:TitleBar Title="Revit Plague" Margin="42,0,0,0" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <ui:TitleBar 
+            Title="RevitPlague" />
+        
+        <ui:NavigationView
+            x:Name="RootNavigation"
+            Grid.Row="1"
+            IsBackButtonVisible="Collapsed"
+            PaneDisplayMode="Left"
+            OpenPaneLength="159"
+            TitleBar="{Binding ElementName=TitleBar, Mode=OneWay}">
+            
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem
+                    Content="Dashboard"
+                    TargetPageType="{x:Type pages:DashboardPage}"
+                    Icon="{ui:SymbolIcon AppGeneric24}" />
+                
+                <ui:NavigationViewItem
+                    Content="Data"
+                    TargetPageType="{x:Type pages:DataPage}"
+                    Icon="{ui:SymbolIcon AppGeneric20}" />
+            </ui:NavigationView.MenuItems>
 
-        <ui:NavigationView x:Name="RootNavigation" 
-                           FooterMenuItemsSource="{Binding NavigationFooter}"
-                           MenuItemsSource="{Binding NavigationItems}">
-
-            <ui:NavigationView.AutoSuggestBox>
-                <ui:AutoSuggestBox x:Name="AutoSuggestBox" PlaceholderText="Search">
-                    <ui:AutoSuggestBox.Icon>
-                        <ui:IconSourceElement>
-                            <ui:SymbolIconSource Symbol="Search24" />
-                        </ui:IconSourceElement>
-                    </ui:AutoSuggestBox.Icon>
-                </ui:AutoSuggestBox>
-            </ui:NavigationView.AutoSuggestBox>
-
-            <ui:NavigationView.Header>
-                <ui:BreadcrumbBar Margin="42,32,0,0" 
-                                  FontSize="28" 
-                                  FontWeight="DemiBold" />
-            </ui:NavigationView.Header>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem
+                    Content="Settings"
+                    TargetPageType="{x:Type pages:SettingsPage}"
+                    Icon="{ui:SymbolIcon Settings24}" />
+            </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
     </Grid>
+    
 </ui:FluentWindow>

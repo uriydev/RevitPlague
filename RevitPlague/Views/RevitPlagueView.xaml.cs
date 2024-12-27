@@ -16,22 +16,23 @@ public partial class RevitPlagueView : IWindow
         
         RootNavigation.SetPageService(pageService);
         ApplyTheme();
-        
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
         
-        Loaded += (sender, args) =>
-        {
-            if (RootNavigation == null)
-                throw new InvalidOperationException("RootNavigation is not initialized.");
-            
-            RootNavigation.SetPageService(pageService);
-            RootNavigation.Navigate(typeof(DataPage));
-        };
-        
-        Unloaded += (s, e) =>
-        {
-            ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
-        };
+        // ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
+        //
+        // Loaded += (sender, args) =>
+        // {
+        //     if (RootNavigation == null)
+        //         throw new InvalidOperationException("RootNavigation is not initialized.");
+        //     
+        //     RootNavigation.SetPageService(pageService);
+        //     RootNavigation.Navigate(typeof(DataPage));
+        // };
+        //
+        // Unloaded += (s, e) =>
+        // {
+        //     ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
+        // };
     }
     
     public MainWindowViewModel ViewModel { get; }
