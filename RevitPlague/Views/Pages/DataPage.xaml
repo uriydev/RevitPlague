@@ -36,29 +36,6 @@
                         Icon="Fluent24" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-            
-            <ListBox ScrollViewer.CanContentScroll="False">
-                <ListBoxItem>Элемент 1</ListBoxItem>
-                <ListBoxItem>Элемент 2</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-                <ListBoxItem>Элемент 3</ListBoxItem>
-            </ListBox>
         </ui:VirtualizingItemsControl>
     </Grid>
 </Page>
