@@ -8,28 +8,29 @@ using Wpf.Ui;
 
 namespace RevitPlague;
 
+/// <summary>
+///     Provides a host for the application's services and manages their lifetimes.
+/// </summary>
 public static class Host
 {
     private static IServiceProvider _serviceProvider;
     
+    /// <summary>
+    ///     Starts the host and configures the application's services.
+    /// </summary>
     public static void Start()
     {
         var services = new ServiceCollection();
         
         services.AddSingleton<IPageService, PageService>();
         
-        // Theme manipulation
-        services.AddSingleton<IThemeService, ThemeService>();
-        
-        // TaskBar manipulation
-        services.AddSingleton<ITaskBarService, TaskBarService>();
-        
         // Service containing navigation, same as INavigationWindow... but without window
-        services.AddTransient<INavigationService, NavigationService>();
+        services.AddSingleton<INavigationService, NavigationService>();
         
         // Main window with navigation
-        services.AddTransient<RevitPlagueView>();
+        // services.AddTransient<RevitPlagueView>();
         services.AddTransient<MainWindowViewModel>();
+        services.AddTransient<IWindow, RevitPlagueView>();
         
         // Views and ViewModels
         services.AddTransient<DashboardPage>();
@@ -39,12 +40,14 @@ public static class Host
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
         
-        //Startup view
-        services.AddTransient<IPlagueService, PlagueService>();
-        
         _serviceProvider = services.BuildServiceProvider();
     }
     
+    /// <summary>
+    ///     Get service of type <typeparamref name="T"/>
+    /// </summary>
+    /// <typeparam name="T">The type of service object to get</typeparam>
+    /// <exception cref="System.InvalidOperationException">There is no service of type <typeparamref name="T"/></exception>
     public static T GetService<T>() where T : class
     {
         return _serviceProvider.GetRequiredService<T>();

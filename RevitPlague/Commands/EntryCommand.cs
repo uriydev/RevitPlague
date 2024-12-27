@@ -13,18 +13,10 @@ public class EntryCommand : IExternalCommand, IExternalCommandAvailability
 {
     public virtual Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
     {
-        // Host.GetService<IPlagueService>().Show<DashboardPage>(); //(1)
-        // var view = Host.GetService<MainWindow>(); //(2)
-        // view.Show(); //(2)
+        // var view = Host.GetService<RevitPlagueView>();
+        var view = Host.GetService<IWindow>();
+        view.Show();
         
-        // UIApplication uiapp = commandData.Application;
-        // new MainView().Show();
-        
-        // var view = Host.GetService<MainView>(); //(2)
-        // view.Show(); //(2)
-        
-        var view = Host.GetService<RevitPlagueView>(); //(3)
-        view.Show(); //(3)
         return Result.Succeeded;
     }
     
