@@ -1,19 +1,19 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 
 namespace RevitPlague.ViewModels;
 
-public sealed partial class SettingsViewModel : ObservableObject, INavigationAware
+public sealed partial class SettingsViewModel : ObservableObject
 {
     private bool _isInitialized = false;
 
-    [ObservableProperty] private string _appVersion = string.Empty;
+    [ObservableProperty] 
+    private string _appVersion = string.Empty;
 
-    [ObservableProperty] private Wpf.Ui.Appearance.ApplicationTheme _currentApplicationTheme = Wpf.Ui
-        .Appearance
-        .ApplicationTheme
-        .Unknown;
+    [ObservableProperty] 
+    private ApplicationTheme _currentApplicationTheme = ApplicationTheme.Unknown;
 
     public void OnNavigatedTo()
     {
@@ -23,14 +23,10 @@ public sealed partial class SettingsViewModel : ObservableObject, INavigationAwa
         }
     }
 
-    public void OnNavigatedFrom()
-    {
-    }
-
     private void InitializeViewModel()
     {
-        CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationThemeManager.GetAppTheme();
-        AppVersion = $"Wpf.Ui.Demo.Mvvm - {GetAssemblyVersion()}";
+        CurrentApplicationTheme = ApplicationThemeManager.GetAppTheme();
+        AppVersion = $"RevitPlague - {GetAssemblyVersion()}";
 
         _isInitialized = true;
     }
@@ -47,24 +43,24 @@ public sealed partial class SettingsViewModel : ObservableObject, INavigationAwa
         switch (parameter)
         {
             case "theme_light":
-                if (CurrentApplicationTheme == Wpf.Ui.Appearance.ApplicationTheme.Light)
+                if (CurrentApplicationTheme == ApplicationTheme.Light)
                 {
                     break;
                 }
 
-                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Light);
-                CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationTheme.Light;
+                ApplicationThemeManager.Apply(ApplicationTheme.Light);
+                CurrentApplicationTheme = ApplicationTheme.Light;
 
                 break;
 
             default:
-                if (CurrentApplicationTheme == Wpf.Ui.Appearance.ApplicationTheme.Dark)
+                if (CurrentApplicationTheme == ApplicationTheme.Dark)
                 {
                     break;
                 }
 
-                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(Wpf.Ui.Appearance.ApplicationTheme.Dark);
-                CurrentApplicationTheme = Wpf.Ui.Appearance.ApplicationTheme.Dark;
+                ApplicationThemeManager.Apply(ApplicationTheme.Dark);
+                CurrentApplicationTheme = ApplicationTheme.Dark;
 
                 break;
         }

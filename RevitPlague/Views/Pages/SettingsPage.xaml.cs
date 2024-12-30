@@ -4,7 +4,7 @@ using Wpf.Ui.Controls;
 
 namespace RevitPlague.Views.Pages;
 
-public partial class SettingsPage : INavigableView<SettingsViewModel>
+public partial class SettingsPage : INavigableView<SettingsViewModel>, IDisposable
 {
     public SettingsPage(SettingsViewModel viewModel)
     {
@@ -22,5 +22,10 @@ public partial class SettingsPage : INavigableView<SettingsViewModel>
         System.Windows.Media.Color systemAccent)
     {
         ApplicationThemeManager.Apply(this);
+    }
+
+    public void Dispose()
+    {
+        ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
     }
 }

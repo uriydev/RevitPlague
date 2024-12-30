@@ -7,14 +7,20 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewModels="clr-namespace:RevitPlague.ViewModels"
     xmlns:pages="clr-namespace:RevitPlague.Views.Pages"
-    d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel}"
-    mc:Ignorable="d"
+    xmlns:views="clr-namespace:RevitPlague.Views"
+    d:DataContext="{d:DesignInstance views:RevitPlagueView}"
     ExtendsContentIntoTitleBar="True"
     WindowBackdropType="Auto"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Background="{DynamicResource ApplicationBackgroundBrush}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     MinWidth="550"
-    MinHeight="325">
+    MinHeight="325"
+    ScrollViewer.CanContentScroll="False"
+    mc:Ignorable="d">
     
     <Grid>
         <Grid.RowDefinitions>

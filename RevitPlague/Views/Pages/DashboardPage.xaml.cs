@@ -13,15 +13,7 @@ public partial class DashboardPage : INavigableView<DashboardViewModel>
         DataContext = this;
         
         ApplicationThemeManager.Apply(this);
-        ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
     }
     
     public DashboardViewModel ViewModel { get; }
-    
-    private void ApplicationThemeManager_Changed(
-        ApplicationTheme currentApplicationTheme, 
-        System.Windows.Media.Color systemAccent)
-    {
-        ApplicationThemeManager.Apply(this);
-    }
 }

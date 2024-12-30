@@ -12,14 +12,8 @@ public partial class DataPage : INavigableView<DataViewModel>
         InitializeComponent();
         DataContext = this;
         
-        ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
         ApplicationThemeManager.Apply(this);
     }
     
     public DataViewModel ViewModel { get; }
-    
-    private void ApplicationThemeManager_Changed(ApplicationTheme currentApplicationTheme, System.Windows.Media.Color systemAccent)
-    {
-        ApplicationThemeManager.Apply(this);
-    }
 }

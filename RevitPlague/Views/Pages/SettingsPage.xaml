@@ -6,13 +6,12 @@
     xmlns:helpers="clr-namespace:RevitPlague.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:pages="clr-namespace:RevitPlague.Views.Pages"
+    d:DataContext="{d:DesignInstance pages:SettingsPage}"
     Title="SettingsPage"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
-    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-    Background="{DynamicResource ApplicationBackgroundBrush}"
+
     ScrollViewer.CanContentScroll="False"
     mc:Ignorable="d">
     

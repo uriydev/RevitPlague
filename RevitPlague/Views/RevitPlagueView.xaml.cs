@@ -6,7 +6,7 @@ using Wpf.Ui.Appearance;
 
 namespace RevitPlague.Views;
 
-public partial class RevitPlagueView : IWindow
+public partial class RevitPlagueView : IWindow, IDisposable
 {
     public RevitPlagueView(MainWindowViewModel viewModel, IPageService pageService)
     {
@@ -17,22 +17,6 @@ public partial class RevitPlagueView : IWindow
         RootNavigation.SetPageService(pageService);
         ApplyTheme();
         ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
-        
-        // ApplicationThemeManager.Changed += ApplicationThemeManager_Changed;
-        //
-        // Loaded += (sender, args) =>
-        // {
-        //     if (RootNavigation == null)
-        //         throw new InvalidOperationException("RootNavigation is not initialized.");
-        //     
-        //     RootNavigation.SetPageService(pageService);
-        //     RootNavigation.Navigate(typeof(DataPage));
-        // };
-        //
-        // Unloaded += (s, e) =>
-        // {
-        //     ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
-        // };
     }
     
     public MainWindowViewModel ViewModel { get; }
@@ -46,5 +30,10 @@ public partial class RevitPlagueView : IWindow
         System.Windows.Media.Color systemAccent)
     {
         ApplicationThemeManager.Apply(this);
+    }
+
+    public void Dispose()
+    {
+        ApplicationThemeManager.Changed -= ApplicationThemeManager_Changed;
     }
 }
