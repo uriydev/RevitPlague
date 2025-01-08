@@ -74,7 +74,11 @@
         <!--IOC-->
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 
-<!--        <PackageReference Include="WPF-UI" Version="3.0.5" />-->
+        <!--UI-->
+        <!--        <PackageReference Include="WPF-UI" Version="3.0.5" />-->
+        
+        <!--UI-->
+        <PackageReference Include="RevitTask " Version="3.0.0" />
     </ItemGroup>
 
     <!--Run/Debug-->
@@ -144,10 +148,6 @@
     <ItemGroup>
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Wpf.Ui\Wpf.Ui.csproj" />
     </ItemGroup>
 
 </Project>

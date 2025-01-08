@@ -1,68 +1,73 @@
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
+using System.Windows.Input;
+using Autodesk.Revit.UI;
+using Nice3point.Revit.Toolkit.External.Handlers;
 
 namespace RevitPlague.ViewModels;
 
-public sealed partial class SettingsViewModel : ObservableObject
+// public class SettingsViewModel
+// {
+//     private RevitTask _revitTask = new RevitTask();
+//     
+//     public SettingsViewModel()
+//     {
+//         RunLongRevit = new UiCommand(PlaceInstances);
+//     }
+//     
+//     public ICommand RunLongRevit { get; set; }
+//     
+//     private async void PlaceInstances()
+//     {
+//         try
+//         {
+//             await _revitTask.Run<int>(app => app.ActiveUIDocument
+//                 .Selection
+//                 .PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element)
+//                 .Count);
+//         }
+//         catch(Exception e)
+//         {
+//             TaskDialog.Show("Debug", e.Message);
+//         }
+//     }
+// }
+public class SettingsViewModel
 {
-    private bool _isInitialized = false;
+    // Используем AsyncEventHandler для выполнения асинхронной операции с возвратом значения
+    private AsyncEventHandler<int> _asyncEventHandler;
 
-    [ObservableProperty] 
-    private string _appVersion = string.Empty;
-
-    [ObservableProperty] 
-    private ApplicationTheme _currentApplicationTheme = ApplicationTheme.Unknown;
-
-    public void OnNavigatedTo()
+    public SettingsViewModel()
     {
-        if (!_isInitialized)
+        // Инициализируем обработчик асинхронного события
+        _asyncEventHandler = new AsyncEventHandler<int>();
+
+        RunLongRevit = new UiCommand(PlaceInstances);
+    }
+
+    public ICommand RunLongRevit { get; set; }
+
+    private async void PlaceInstances()
+    {
+        try
         {
-            InitializeViewModel();
+            // Запуск асинхронного внешнего события
+            var selectedCount = await _asyncEventHandler.RaiseAsync(application =>
+            {
+                var selection = application.ActiveUIDocument.Selection;
+
+                // Запрос выбора объектов в Revit
+                var pickedObjects = selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+
+                // Возвращаем количество выбранных объектов
+                return pickedObjects.Count;
+            });
+
+            // Показываем результат пользователю
+            TaskDialog.Show("Selection Result", $"Selected objects count: {selectedCount}");
         }
-    }
-
-    private void InitializeViewModel()
-    {
-        CurrentApplicationTheme = ApplicationThemeManager.GetAppTheme();
-        AppVersion = $"RevitPlague - {GetAssemblyVersion()}";
-
-        _isInitialized = true;
-    }
-
-    private static string GetAssemblyVersion()
-    {
-        return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString()
-               ?? string.Empty;
-    }
-
-    [RelayCommand]
-    private void OnChangeTheme(string parameter)
-    {
-        switch (parameter)
+        catch (Exception e)
         {
-            case "theme_light":
-                if (CurrentApplicationTheme == ApplicationTheme.Light)
-                {
-                    break;
-                }
-
-                ApplicationThemeManager.Apply(ApplicationTheme.Light);
-                CurrentApplicationTheme = ApplicationTheme.Light;
-
-                break;
-
-            default:
-                if (CurrentApplicationTheme == ApplicationTheme.Dark)
-                {
-                    break;
-                }
-
-                ApplicationThemeManager.Apply(ApplicationTheme.Dark);
-                CurrentApplicationTheme = ApplicationTheme.Dark;
-
-                break;
+            // Обработка ошибок
+            TaskDialog.Show("Error", e.Message);
         }
     }
 }
