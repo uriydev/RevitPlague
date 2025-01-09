@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Input;
 using Nice3point.Revit.Toolkit.External.Handlers;
@@ -6,19 +7,19 @@ using Autodesk.Revit.UI;
 
 namespace RevitPlague.ViewModels;
 
-public class SettingsViewModel
+public class HomeViewModel
 {
     private readonly ActionEventHandler _actionEventHandler;
 
-    public SettingsViewModel(ActionEventHandler actionEventHandler)
+    public HomeViewModel(ActionEventHandler actionEventHandler)
     {
-        _actionEventHandler = actionEventHandler;  // Получаем через DI
-        RunLongRevit = new RelayCommand(PlaceInstances);
+        _actionEventHandler = actionEventHandler;
+        HomeVMCommand = new RelayCommand(DeleteInstances);
     }
+    
+    public ICommand HomeVMCommand { get; }
 
-    public ICommand RunLongRevit { get; }
-
-    private void PlaceInstances()
+    private void DeleteInstances()
     {
         _actionEventHandler.Raise(application =>
         {
@@ -26,14 +27,21 @@ public class SettingsViewModel
 
             try
             {
-                var pickedObjects = selection.PickObjects(ObjectType.Element);
+                var document = application.ActiveUIDocument.Document;
 
+                var pickedObjects = selection.PickObjects(ObjectType.Element);
+                
+                using var transaction = new Transaction(document, $"Delete elements");
+                transaction.Start();
+                
                 foreach (var pickedObject in pickedObjects)
                 {
                     var elementId = pickedObject.ElementId;
-                    var document = application.ActiveUIDocument.Document;
                     var element = document.GetElement(elementId);
+                    document.Delete(elementId);
                 }
+                
+                transaction.Commit();
             }
             catch (Exception ex)
             {

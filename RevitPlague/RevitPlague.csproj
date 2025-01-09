@@ -15,7 +15,8 @@
     <PropertyGroup>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
-    
+
+    <!--RevitVersion-->
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
         <RevitVersion>2021</RevitVersion>
         <TargetFramework>net48</TargetFramework>
@@ -61,9 +62,8 @@
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIMacros" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFrameworkServices" Version="$(RevitVersion).*"/>
-<!--                <PackageReference Include="Nice3point.Revit.Build.Tasks" Version="2.*"/>-->
-                <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>
-                <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>
+        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>
+        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>
         
         <!--MVVM-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
@@ -75,9 +75,9 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 
         <!--UI-->
-        <!--        <PackageReference Include="WPF-UI" Version="3.0.5" />-->
+        <PackageReference Include="WPF-UI" Version="3.0.5" />
         
-        <!--UI-->
+        <!--RevitTask-->
         <PackageReference Include="RevitTask " Version="3.0.0" />
     </ItemGroup>
 
@@ -88,6 +88,7 @@
         <StartArguments>/language ENG</StartArguments>
     </PropertyGroup>
 
+    <!--Targets-->
     <Target Name="_GenerateAddinPackage"
             AfterTargets="CoreBuild"
             Condition="$(DisableAddinBundleGeneration) != 'true' AND $(RevitVersion) != ''">
@@ -138,13 +139,15 @@
 
         <RemoveDir Directories="$(TargetDir)publish\"/>
     </Target>
-    
+
+    <!--Resources-->
     <ItemGroup>
         <Resource Include="Resources\Icons\RibbonIcon16.png" />
         <Resource Include="Resources\Icons\RibbonIcon32.png" />
         <Resource Include="Resources\Images\ShellIcon.ico" />
     </ItemGroup>
 
+    <!--App-->
     <ItemGroup>
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>

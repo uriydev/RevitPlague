@@ -1,46 +1,44 @@
-using System.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Nice3point.Revit.Toolkit.External.Handlers;
-using RevitPlague.Services;
-using RevitPlague.Views;
+using RevitPlague.ViewModels;
+using RevitPlague.Views.Pages;
+using Wpf.Ui;
 
-namespace RevitPlague.ViewModels;
+namespace RevitPlague.Views;
 
-using System.Windows.Input;
-
-public class MainViewModel : INotifyPropertyChanged
+public partial class RevitPlagueView
 {
     public ICommand NavigateToHomeCommand { get; }
     public ICommand NavigateToSettingsCommand { get; }
 
-    private readonly NavigationService _navigationService;
-    
-    public MainViewModel(NavigationService navigationService)
+    public RevitPlagueView(ActionEventHandler actionEventHandler, INavigationService navigationService)
     {
-        ActionEventHandler = new ActionEventHandler();
+        InitializeComponent();
         
-        _navigationService = navigationService;
+        ActionEventHandler = actionEventHandler;    //  DI
+        navigationService.SetNavigationControl(RootNavigation);
+
         NavigateToHomeCommand = new RelayCommand(NavigateToHome);
         NavigateToSettingsCommand = new RelayCommand(NavigateToSettings);
     }
-    
+
     public ActionEventHandler ActionEventHandler { get; }
-    
+
     private void NavigateToHome()
     {
         ActionEventHandler.Raise(application =>
         {
-            _navigationService.Navigate(new HomePage()); 
+            RootNavigation.Navigate(typeof(HomePage));
         });
     }
-    
+
     private void NavigateToSettings()
     {
         ActionEventHandler.Raise(application =>
         {
-            _navigationService.Navigate(new SettingsPage());
+            var settingsViewModel = new SettingsViewModel(ActionEventHandler);
+            RootNavigation.Navigate(typeof(SettingsPage), settingsViewModel);
         });
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 }

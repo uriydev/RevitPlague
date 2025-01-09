@@ -1,6 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+using Nice3point.Revit.Toolkit.External.Handlers;
 using RevitPlague.ViewModels;
 using RevitPlague.Views;
+using RevitPlague.Views.Pages;
+using Wpf.Ui;
 
 namespace RevitPlague;
 
@@ -12,13 +15,15 @@ public static class Host
     {
         var services = new ServiceCollection();
         
-        // var view = new MainWindow().ShowDialog();
+        services.AddTransient<INavigationService, NavigationService>();
         
-        services.AddTransient<MainViewModel>();
-        services.AddTransient<MainWindow>();
+        services.AddSingleton<ActionEventHandler>();
         
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<HomePage>();
+        services.AddTransient<HomeViewModel>();
+        services.AddTransient<RevitPlagueView>();
         
         _serviceProvider = services.BuildServiceProvider();
     }
