@@ -1,6 +1,6 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Nice3point.Revit.Toolkit.External.Handlers;
+using RevitPlague.Core.Services;
 using RevitPlague.ViewModels;
 using RevitPlague.Views.Pages;
 using Wpf.Ui;
@@ -12,7 +12,8 @@ public partial class RevitPlagueView
     public ICommand NavigateToHomeCommand { get; }
     public ICommand NavigateToSettingsCommand { get; }
 
-    public RevitPlagueView(ActionEventHandler actionEventHandler, INavigationService navigationService)
+    // public RevitPlagueView(ActionEventHandler actionEventHandler, INavigationService navigationService)
+    public RevitPlagueView(RevitApiTaskHandler actionEventHandler, INavigationService navigationService)
     {
         InitializeComponent();
         
@@ -23,11 +24,13 @@ public partial class RevitPlagueView
         NavigateToSettingsCommand = new RelayCommand(NavigateToSettings);
     }
 
-    public ActionEventHandler ActionEventHandler { get; }
+    // public ActionEventHandler ActionEventHandler { get; }
+    public RevitApiTaskHandler ActionEventHandler { get; }
 
     private void NavigateToHome()
     {
-        ActionEventHandler.Raise(application =>
+        // ActionEventHandler.Raise(application =>
+        ActionEventHandler.Run(application =>
         {
             RootNavigation.Navigate(typeof(HomePage));
         });
@@ -35,10 +38,10 @@ public partial class RevitPlagueView
 
     private void NavigateToSettings()
     {
-        ActionEventHandler.Raise(application =>
+        // ActionEventHandler.Raise(application =>
+        ActionEventHandler.Run(application =>
         {
-            var settingsViewModel = new SettingsViewModel(ActionEventHandler);
-            RootNavigation.Navigate(typeof(SettingsPage), settingsViewModel);
+            RootNavigation.Navigate(typeof(SettingsPage));
         });
     }
 }

@@ -20,11 +20,52 @@
         <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
+            
             <TextBlock Text="Welcome to the Settings Page" />
+            
             <Button
                 HorizontalAlignment="Center"
                 Command="{Binding RunLongRevit}"
                 Content="Select Elems" />
+            
+            <Button
+                HorizontalAlignment="Stretch"
+                Command=
+                "{
+                Binding GetEntitiesCommand,
+                Mode=OneTime
+            }"
+                CommandParameter=
+                "{
+                Binding NameFilter,
+                Mode=TwoWay,
+                UpdateSourceTrigger=PropertyChanged
+            }"
+                Content="Query"
+            ></Button>
+
+            <Button
+                HorizontalAlignment="Stretch"
+                Command=
+                "{
+                Binding ZoomEntityCommand,
+                Mode=OneTime
+            }"
+                CommandParameter="{Binding}"
+                Content="Zoom"
+            ></Button>
+
+            <Button
+                HorizontalAlignment="Stretch"
+                Command=
+                "{
+                Binding PickEntitiesCommand,
+                Mode=OneTime
+            }"
+                CommandParameter="{Binding}"
+                Content="Pick"
+            ></Button>
         </StackPanel>
+        
     </Grid>
 </Page>

@@ -1,26 +1,39 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Input;
-using Nice3point.Revit.Toolkit.External.Handlers;
 using Autodesk.Revit.UI;
+using RevitPlague.Commands;
+using RevitPlague.Contracts;
+using RevitPlague.Core.Services;
 
 namespace RevitPlague.ViewModels;
 
 public class SettingsViewModel
 {
-    private readonly ActionEventHandler _actionEventHandler;
+    // private readonly ActionEventHandler _actionEventHandler;
+    private readonly RevitApiTaskHandler _actionEventHandler;
+    
+    private EntityVM[] _entities;
+    private string? _nameFilter;
+    private EntityVM? _selectedEntity;
 
-    public SettingsViewModel(ActionEventHandler actionEventHandler)
+    public SettingsViewModel(RevitApiTaskHandler actionEventHandler)
     {
-        _actionEventHandler = actionEventHandler;  // Получаем через DI
+        _actionEventHandler = actionEventHandler;
+        
         RunLongRevit = new RelayCommand(PlaceInstances);
     }
+    
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public ICommand RunLongRevit { get; }
 
     private void PlaceInstances()
     {
-        _actionEventHandler.Raise(application =>
+        // _actionEventHandler.Raise(application =>
+        _actionEventHandler.Run(application =>
         {
             var selection = application.ActiveUIDocument.Selection;
 

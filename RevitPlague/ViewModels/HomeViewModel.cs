@@ -2,16 +2,18 @@ using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Input;
-using Nice3point.Revit.Toolkit.External.Handlers;
 using Autodesk.Revit.UI;
+using RevitPlague.Core.Services;
 
 namespace RevitPlague.ViewModels;
 
 public class HomeViewModel
 {
-    private readonly ActionEventHandler _actionEventHandler;
+    // private readonly ActionEventHandler _actionEventHandler;
+    private readonly RevitApiTaskHandler _actionEventHandler;
 
-    public HomeViewModel(ActionEventHandler actionEventHandler)
+    // public HomeViewModel(ActionEventHandler actionEventHandler)
+    public HomeViewModel(RevitApiTaskHandler actionEventHandler)
     {
         _actionEventHandler = actionEventHandler;
         HomeVMCommand = new RelayCommand(DeleteInstances);
@@ -21,7 +23,8 @@ public class HomeViewModel
 
     private void DeleteInstances()
     {
-        _actionEventHandler.Raise(application =>
+        // _actionEventHandler.Raise(application =>
+        _actionEventHandler.Run(application =>
         {
             var selection = application.ActiveUIDocument.Selection;
 

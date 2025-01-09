@@ -62,8 +62,8 @@
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIMacros" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFrameworkServices" Version="$(RevitVersion).*"/>
-        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>
-        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>
+<!--        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>-->
+<!--        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>-->
         
         <!--MVVM-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
@@ -73,6 +73,7 @@
 
         <!--IOC-->
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+        <PackageReference Include="SimpleInjector" Version="5.5.0" />
 
         <!--UI-->
         <PackageReference Include="WPF-UI" Version="3.0.5" />

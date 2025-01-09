@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
-using Nice3point.Revit.Toolkit.External.Handlers;
+using RevitPlague.Core.Services;
 using RevitPlague.ViewModels;
 using RevitPlague.Views;
 using RevitPlague.Views.Pages;
@@ -17,7 +17,8 @@ public static class Host
         
         services.AddTransient<INavigationService, NavigationService>();
         
-        services.AddSingleton<ActionEventHandler>();
+        // services.AddSingleton<ActionEventHandler>();
+        services.AddSingleton<RevitApiTaskHandler>();
         
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
