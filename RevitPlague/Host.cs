@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using RevitPlague.Core.Services;
+using RevitPlague.Models;
 using RevitPlague.ViewModels;
 using RevitPlague.Views;
 using RevitPlague.Views.Pages;
@@ -17,7 +18,6 @@ public static class Host
         
         services.AddTransient<INavigationService, NavigationService>();
         
-        // services.AddSingleton<ActionEventHandler>();
         services.AddSingleton<RevitApiTaskHandler>();
         
         services.AddTransient<SettingsPage>();
@@ -25,6 +25,8 @@ public static class Host
         services.AddTransient<HomePage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
+        
+        services.AddTransient<ElementToDTOConverter>(); // ON TESTING
         
         _serviceProvider = services.BuildServiceProvider();
     }
