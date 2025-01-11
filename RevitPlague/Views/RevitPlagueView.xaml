@@ -15,8 +15,7 @@
     MinHeight="371"
     Width="1016"
     Height="555"
-    ExtendsContentIntoTitleBar="True"
-    ScrollViewer.CanContentScroll="False">
+    ExtendsContentIntoTitleBar="True">
     
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
