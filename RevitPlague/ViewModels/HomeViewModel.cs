@@ -9,10 +9,8 @@ namespace RevitPlague.ViewModels;
 
 public class HomeViewModel
 {
-    // private readonly ActionEventHandler _actionEventHandler;
     private readonly RevitApiTaskHandler _actionEventHandler;
 
-    // public HomeViewModel(ActionEventHandler actionEventHandler)
     public HomeViewModel(RevitApiTaskHandler actionEventHandler)
     {
         _actionEventHandler = actionEventHandler;
@@ -23,7 +21,6 @@ public class HomeViewModel
 
     private void DeleteInstances()
     {
-        // _actionEventHandler.Raise(application =>
         _actionEventHandler.Run(application =>
         {
             var selection = application.ActiveUIDocument.Selection;

@@ -1,52 +1,54 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Input;
 using Autodesk.Revit.UI;
-using RevitPlague.Commands;
 using RevitPlague.Contracts;
 using RevitPlague.Core.Services;
+using RevitPlague.Models;
 
 namespace RevitPlague.ViewModels;
 
 public class SettingsViewModel
 {
-    // private readonly ActionEventHandler _actionEventHandler;
     private readonly RevitApiTaskHandler _actionEventHandler;
+    private readonly ElementToDTOConverter _elementToDtoConverter;
+    private ZoomElementService _zoomElementService;
     
     private EntityVM[] _entities;
     private string? _nameFilter;
     private EntityVM? _selectedEntity;
 
-    public SettingsViewModel(RevitApiTaskHandler actionEventHandler)
+    public SettingsViewModel(
+        RevitApiTaskHandler actionEventHandler, 
+        ElementToDTOConverter elementToDtoConverter)
     {
         _actionEventHandler = actionEventHandler;
+        _elementToDtoConverter = elementToDtoConverter;
         
-        RunLongRevit = new RelayCommand(PlaceInstances);
+        PickAndZoomInstancesCommand = new RelayCommand(PickAndZoomInstances);
     }
     
-    public event PropertyChangedEventHandler PropertyChanged;
+    public ICommand PickAndZoomInstancesCommand { get; }
 
-    public ICommand RunLongRevit { get; }
-
-    private void PlaceInstances()
+    private void PickAndZoomInstances()
     {
-        // _actionEventHandler.Raise(application =>
         _actionEventHandler.Run(application =>
         {
+            _zoomElementService = new ZoomElementService(application.ActiveUIDocument);
+            
             var selection = application.ActiveUIDocument.Selection;
-
+            
             try
             {
-                var pickedObjects = selection.PickObjects(ObjectType.Element);
+                var pickedObject = selection.PickObject(ObjectType.Element);
 
-                foreach (var pickedObject in pickedObjects)
-                {
-                    var elementId = pickedObject.ElementId;
-                    var document = application.ActiveUIDocument.Document;
-                    var element = document.GetElement(elementId);
-                }
+                var elementId = pickedObject.ElementId;
+                var document = application.ActiveUIDocument.Document;
+                var element = document.GetElement(elementId);
+                    
+                EntityDTO res = _elementToDtoConverter.Convert(element);
+                
+                _zoomElementService.Zoom(res);
             }
             catch (Exception ex)
             {
