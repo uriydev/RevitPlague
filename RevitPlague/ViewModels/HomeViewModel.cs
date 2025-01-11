@@ -9,19 +9,19 @@ namespace RevitPlague.ViewModels;
 
 public class HomeViewModel
 {
-    private readonly RevitApiTaskHandler _actionEventHandler;
-
-    public HomeViewModel(RevitApiTaskHandler actionEventHandler)
+    public HomeViewModel(RevitApiTaskHandler revitApiTaskHandler)
     {
-        _actionEventHandler = actionEventHandler;
+        RevitApiTaskHandler = revitApiTaskHandler;
+        
         HomeVMCommand = new RelayCommand(DeleteInstances);
     }
     
+    public RevitApiTaskHandler RevitApiTaskHandler { get; }
     public ICommand HomeVMCommand { get; }
 
     private void DeleteInstances()
     {
-        _actionEventHandler.Run(application =>
+        RevitApiTaskHandler.Run(application =>
         {
             var selection = application.ActiveUIDocument.Selection;
 

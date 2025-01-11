@@ -12,7 +12,9 @@ public partial class RevitPlagueView
     public ICommand NavigateToHomeCommand { get; }
     public ICommand NavigateToSettingsCommand { get; }
 
-    public RevitPlagueView(RevitApiTaskHandler revitApiTaskHandler, INavigationService navigationService)
+    public RevitPlagueView(
+        INavigationService navigationService, 
+        RevitApiTaskHandler revitApiTaskHandler)
     {
         InitializeComponent();
         

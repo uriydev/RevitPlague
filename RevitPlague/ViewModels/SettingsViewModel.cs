@@ -10,29 +10,29 @@ namespace RevitPlague.ViewModels;
 
 public class SettingsViewModel
 {
-    private readonly RevitApiTaskHandler _actionEventHandler;
     private readonly ElementToDTOConverter _elementToDtoConverter;
     private ZoomElementService _zoomElementService;
     
     private EntityVM[] _entities;
     private string? _nameFilter;
     private EntityVM? _selectedEntity;
-
+    
     public SettingsViewModel(
-        RevitApiTaskHandler actionEventHandler, 
+        RevitApiTaskHandler revitApiTaskHandler, 
         ElementToDTOConverter elementToDtoConverter)
     {
-        _actionEventHandler = actionEventHandler;
+        RevitApiTaskHandler = revitApiTaskHandler;
         _elementToDtoConverter = elementToDtoConverter;
         
         PickAndZoomInstancesCommand = new RelayCommand(PickAndZoomInstances);
     }
     
+    public RevitApiTaskHandler RevitApiTaskHandler { get; }
     public ICommand PickAndZoomInstancesCommand { get; }
 
     private void PickAndZoomInstances()
     {
-        _actionEventHandler.Run(application =>
+        RevitApiTaskHandler.Run(application =>
         {
             _zoomElementService = new ZoomElementService(application.ActiveUIDocument);
             
