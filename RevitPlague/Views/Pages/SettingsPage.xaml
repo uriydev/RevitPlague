@@ -25,47 +25,9 @@
             
             <Button
                 HorizontalAlignment="Center"
-                Command="{Binding RunLongRevit}"
-                Content="Select Elems" />
+                Command="{Binding PickAndZoomInstancesCommand}"
+                Content="Pick and Zoom Elem" />
             
-            <Button
-                HorizontalAlignment="Stretch"
-                Command=
-                "{
-                Binding GetEntitiesCommand,
-                Mode=OneTime
-            }"
-                CommandParameter=
-                "{
-                Binding NameFilter,
-                Mode=TwoWay,
-                UpdateSourceTrigger=PropertyChanged
-            }"
-                Content="Query"
-            ></Button>
-
-            <Button
-                HorizontalAlignment="Stretch"
-                Command=
-                "{
-                Binding ZoomEntityCommand,
-                Mode=OneTime
-            }"
-                CommandParameter="{Binding}"
-                Content="Zoom"
-            ></Button>
-
-            <Button
-                HorizontalAlignment="Stretch"
-                Command=
-                "{
-                Binding PickEntitiesCommand,
-                Mode=OneTime
-            }"
-                CommandParameter="{Binding}"
-                Content="Pick"
-            ></Button>
         </StackPanel>
-        
     </Grid>
 </Page>
