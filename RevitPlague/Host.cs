@@ -26,7 +26,9 @@ public static class Host
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
         
-        services.AddTransient<ElementToDTOConverter>(); // ON TESTING
+        services.AddTransient<ElementToDTOConverter>();
+        
+        services.AddSingleton<ZoomElementServiceFactory>();
         
         _serviceProvider = services.BuildServiceProvider();
     }

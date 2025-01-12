@@ -11,22 +11,20 @@ namespace RevitPlague.ViewModels;
 public class SettingsViewModel
 {
     private readonly ElementToDTOConverter _elementToDtoConverter;
-    private ZoomElementService _zoomElementService;
-    
-    private EntityVM[] _entities;
-    private string? _nameFilter;
-    private EntityVM? _selectedEntity;
-    
+    private readonly ZoomElementServiceFactory _zoomElementServiceFactory;
+
     public SettingsViewModel(
-        RevitApiTaskHandler revitApiTaskHandler, 
-        ElementToDTOConverter elementToDtoConverter)
+        RevitApiTaskHandler revitApiTaskHandler,
+        ElementToDTOConverter elementToDtoConverter,
+        ZoomElementServiceFactory zoomElementServiceFactory)
     {
         RevitApiTaskHandler = revitApiTaskHandler;
         _elementToDtoConverter = elementToDtoConverter;
-        
+        _zoomElementServiceFactory = zoomElementServiceFactory;
+
         PickAndZoomInstancesCommand = new RelayCommand(PickAndZoomInstances);
     }
-    
+
     public RevitApiTaskHandler RevitApiTaskHandler { get; }
     public ICommand PickAndZoomInstancesCommand { get; }
 
@@ -34,21 +32,27 @@ public class SettingsViewModel
     {
         RevitApiTaskHandler.Run(application =>
         {
-            _zoomElementService = new ZoomElementService(application.ActiveUIDocument);
-            
-            var selection = application.ActiveUIDocument.Selection;
-            
+            var activeUIDocument = application.ActiveUIDocument;
+            if (activeUIDocument == null)
+            {
+                TaskDialog.Show("Ошибка", "Нет активного документа Revit.");
+                return;
+            }
+
+            // Создаем экземпляр ZoomElementService через фабрику
+            var zoomElementService = _zoomElementServiceFactory.Create(activeUIDocument);
+
+            var selection = activeUIDocument.Selection;
             try
             {
                 var pickedObject = selection.PickObject(ObjectType.Element);
-
                 var elementId = pickedObject.ElementId;
-                var document = application.ActiveUIDocument.Document;
+
+                var document = activeUIDocument.Document;
                 var element = document.GetElement(elementId);
-                    
-                EntityDTO res = _elementToDtoConverter.Convert(element);
-                
-                _zoomElementService.Zoom(res);
+
+                EntityDTO entity = _elementToDtoConverter.Convert(element);
+                zoomElementService.Zoom(entity);
             }
             catch (Exception ex)
             {
