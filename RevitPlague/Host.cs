@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using RevitPlague.Core.Services;
-using RevitPlague.Models;
 using RevitPlague.ViewModels;
 using RevitPlague.Views;
 using RevitPlague.Views.Pages;
@@ -18,17 +17,13 @@ public static class Host
         
         services.AddTransient<INavigationService, NavigationService>();
         
-        services.AddSingleton<RevitApiTaskHandler>();
-        
         services.AddTransient<SettingsPage>();
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<HomePage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
         
-        services.AddTransient<ElementToDTOConverter>();
-        
-        services.AddSingleton<ZoomElementServiceFactory>();
+        services.AddSingleton<RevitApiTaskHandler>();
         
         _serviceProvider = services.BuildServiceProvider();
     }
