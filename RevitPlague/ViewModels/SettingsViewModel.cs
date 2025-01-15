@@ -13,13 +13,13 @@ public class SettingsViewModel
     {
         RevitApiTaskHandler = revitApiTaskHandler;
 
-        PickAndZoomInstancesCommand = new RelayCommand(PickAndZoomInstances);
+        PickAndZoomInstancesCommand = new RelayCommand(PickAndZoomInstance);
     }
 
     public RevitApiTaskHandler RevitApiTaskHandler { get; }
     public ICommand PickAndZoomInstancesCommand { get; }
 
-    private void PickAndZoomInstances()
+    private void PickAndZoomInstance()
     {
         RevitApiTaskHandler.Run(application =>
         {
@@ -31,6 +31,7 @@ public class SettingsViewModel
             }
             
             var selection = activeUIDocument.Selection;
+            
             try
             {
                 var pickedObject = selection.PickObject(ObjectType.Element);
