@@ -1,27 +1,9 @@
 using System.Reflection;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI;
-using RevitPlague.Commands;
 
 namespace RevitPlague;
 
-// public class EntryApplication : ExternalApplication
-// {
-//     public override void OnStartup()
-//     {
-//         Host.Start();
-//         CreateRibbon();
-//     }
-//
-//     private void CreateRibbon()
-//     {
-//         var panel = Application.CreatePanel("Commands", "RP Tab");
-//
-//         panel.AddPushButton<PlagueViewCommand>("Execute")
-//             .SetImage("/RevitPlague;component/Resources/Icons/RibbonIcon16.png")
-//             .SetLargeImage("/RevitPlague;component/Resources/Icons/RibbonIcon32.png");
-//     }
-// }
 public class EntryApplication : IExternalApplication
 {
     public Result OnStartup(UIControlledApplication application)
