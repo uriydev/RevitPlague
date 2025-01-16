@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <UseWPF>true</UseWPF>
-        <NoWarn>CS8826</NoWarn>
+        <NoWarn>CS8826, CS8632</NoWarn>
         <LangVersion>latest</LangVersion>
         <PlatformTarget>x64</PlatformTarget>
         <ImplicitUsings>true</ImplicitUsings>
@@ -16,7 +16,7 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     </PropertyGroup>
 
-    <!--RevitVersion-->
+    <!-- Revit versions -->
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
         <RevitVersion>2021</RevitVersion>
         <TargetFramework>net48</TargetFramework>
@@ -53,43 +53,40 @@
         <DebugType>none</DebugType>
     </PropertyGroup>
 
-    <!--NuGet-->
+    <!-- NuGet -->
     <ItemGroup>
-        <!--Revit references-->
+        <!-- Revit references -->
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.AdWindows" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIMacros" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFrameworkServices" Version="$(RevitVersion).*"/>
-<!--        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*"/>-->
-<!--        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*"/>-->
         
-        <!--MVVM-->
+        <!-- MVVM -->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
 
-        <!--DI-->
+        <!-- DI -->
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 
-        <!--IOC-->
+        <!-- IOC -->
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-        <PackageReference Include="SimpleInjector" Version="5.5.0" />
 
-        <!--UI-->
+        <!-- UI -->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
         
-        <!--RevitTask-->
+        <!-- RevitTask -->
         <PackageReference Include="RevitTask " Version="3.0.0" />
     </ItemGroup>
 
-    <!--Run/Debug-->
+    <!-- Run/Debug -->
     <PropertyGroup>
         <StartAction>Program</StartAction>
         <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
         <StartArguments>/language ENG</StartArguments>
     </PropertyGroup>
 
-    <!--Targets-->
+    <!-- Generates the plugin package: copies .addin and build files to the publish folder -->
     <Target Name="_GenerateAddinPackage"
             AfterTargets="CoreBuild"
             Condition="$(DisableAddinBundleGeneration) != 'true' AND $(RevitVersion) != ''">
@@ -97,8 +94,14 @@
         <ItemGroup>
             <RootItem Include="$(ProjectDir)*.addin"/>
             <AddinItem Include="$(TargetDir)**\*" Exclude="**\publish\**\*"/>
-            <_ResolvedFileToPublishAlways Include="@(Content)" PublishDirectory="%(Content.PublishDirectory)" Condition="'%(Content.CopyToPublishDirectory)' == 'Always'"/>
-            <_ResolvedFileToPublishPreserveNewest Include="@(Content)" PublishDirectory="%(Content.PublishDirectory)" Condition="'%(Content.CopyToPublishDirectory)' == 'PreserveNewest'"/>
+            <_ResolvedFileToPublishAlways 
+                    Include="@(Content)" 
+                    PublishDirectory="%(Content.PublishDirectory)" 
+                    Condition="'%(Content.CopyToPublishDirectory)' == 'Always'"/>
+            <_ResolvedFileToPublishPreserveNewest 
+                    Include="@(Content)" 
+                    PublishDirectory="%(Content.PublishDirectory)" 
+                    Condition="'%(Content.CopyToPublishDirectory)' == 'PreserveNewest'"/>
         </ItemGroup>
 
         <PropertyGroup>
@@ -108,11 +111,17 @@
 
         <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)"/>
         <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(_ResolvedFileToPublishAlways)" SkipUnchangedFiles="false" DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishAlways.PublishDirectory)\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(_ResolvedFileToPublishPreserveNewest)" SkipUnchangedFiles="true" DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishPreserveNewest.PublishDirectory)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(_ResolvedFileToPublishAlways)" 
+              SkipUnchangedFiles="false" 
+              DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishAlways.PublishDirectory)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(_ResolvedFileToPublishPreserveNewest)" 
+              SkipUnchangedFiles="true" 
+              DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishPreserveNewest.PublishDirectory)\%(RecursiveDir)"/>
 
         <Message Text="$(AssemblyName) -> $(TargetDir)publish" Importance="high"/>
     </Target>
+
+    <!-- Publishes the plugin package to the Revit Addins folder -->
     <Target Name="_PublishRevitAddin"
             AfterTargets="_GenerateAddinPackage"
             Condition="$(PublishAddinFiles)">
@@ -123,17 +132,21 @@
 
         <Copy SourceFiles="@(AddinFiles)"
               Condition="$(PublishAddinFiles)"
-              DestinationFolder="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)"/>
+              DestinationFolder="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)"/>
 
-        <Message Text="Publishing add-in $(AssemblyName) -> $(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName)" Importance="high"/>
+        <Message Text="Publishing add-in $(AssemblyName) -> $(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName)" Importance="high"/>
     </Target>
+
+    <!-- Cleans up the installed plugin files from the Revit Addins folder -->
     <Target Name="_CleanRevitAddinFolder"
             AfterTargets="Clean"
             Condition="$(PublishAddinFiles)">
 
-        <RemoveDir Directories="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName)"/>
-        <Delete Files="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName).addin"/>
+        <RemoveDir Directories="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName)"/>
+        <Delete Files="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName).addin"/>
     </Target>
+
+    <!-- Removes the generated plugin package from the publish folder -->
     <Target Name="_CleanAddinPackage"
             AfterTargets="Clean"
             Condition="$(DisableAddinBundleGeneration) != 'true'">
@@ -141,14 +154,14 @@
         <RemoveDir Directories="$(TargetDir)publish\"/>
     </Target>
 
-    <!--Resources-->
+    <!-- Resources -->
     <ItemGroup>
         <Resource Include="Resources\Icons\RibbonIcon16.png" />
         <Resource Include="Resources\Icons\RibbonIcon32.png" />
         <Resource Include="Resources\Images\ShellIcon.ico" />
     </ItemGroup>
 
-    <!--App-->
+    <!-- App -->
     <ItemGroup>
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
