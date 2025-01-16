@@ -6,7 +6,6 @@
         <LangVersion>latest</LangVersion>
         <PlatformTarget>x64</PlatformTarget>
         <ImplicitUsings>true</ImplicitUsings>
-        <PublishAddinFiles>true</PublishAddinFiles>
         <Configurations>Debug R21;Debug R22;Debug R23;Debug R24;Debug R25</Configurations>
         <Configurations>$(Configurations);Release R21;Release R22;Release R23;Release R24;Release R25</Configurations>
         <Platforms>AnyCPU</Platforms>
@@ -14,6 +13,8 @@
 
     <PropertyGroup>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <PublishRevitAddin>true</PublishRevitAddin>
+        <PublishRevitFiles>true</PublishRevitFiles>
     </PropertyGroup>
 
     <!-- Revit versions -->
@@ -74,9 +75,6 @@
 
         <!-- UI -->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
-        
-        <!-- RevitTask -->
-        <PackageReference Include="RevitTask " Version="3.0.0" />
     </ItemGroup>
 
     <!-- Run/Debug -->
@@ -85,11 +83,17 @@
         <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
         <StartArguments>/language ENG</StartArguments>
     </PropertyGroup>
+    
+    <!-- Targets for publishing and cleaning up the add-in -->
+    <PropertyGroup>
+        <PublishRevitAddin Condition="'$(PublishRevitAddin)' == ''">false</PublishRevitAddin>
+<!--        <PublishRevitFiles Condition="'$(PublishRevitFiles)' == ''">false</PublishRevitFiles>-->
+        <PublishRevitFiles Condition="'$(PublishRevitFiles)' == '' AND $(PublishRevitAddin) == 'true'">true</PublishRevitFiles>
+    </PropertyGroup>
 
-    <!-- Generates the plugin package: copies .addin and build files to the publish folder -->
-    <Target Name="_GenerateAddinPackage"
+    <Target Name="_PublishRevitFiles"
             AfterTargets="CoreBuild"
-            Condition="$(DisableAddinBundleGeneration) != 'true' AND $(RevitVersion) != ''">
+            Condition="$(PublishRevitFiles) == 'true' AND $(RevitVersion) != ''">
 
         <ItemGroup>
             <RootItem Include="$(ProjectDir)*.addin"/>
@@ -109,47 +113,45 @@
             <AddinDir>$(RootDir)$(AssemblyName)\</AddinDir>
         </PropertyGroup>
 
-        <Copy SourceFiles="@(RootItem)" DestinationFolder="$(RootDir)"/>
-        <Copy SourceFiles="@(AddinItem)" DestinationFolder="$(AddinDir)\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(_ResolvedFileToPublishAlways)" 
-              SkipUnchangedFiles="false" 
+        <Copy SourceFiles="@(RootItem)"
+              DestinationFolder="$(RootDir)"/>
+        <Copy SourceFiles="@(AddinItem)"
+              DestinationFolder="$(AddinDir)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(_ResolvedFileToPublishAlways)"
+              SkipUnchangedFiles="false"
               DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishAlways.PublishDirectory)\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(_ResolvedFileToPublishPreserveNewest)" 
-              SkipUnchangedFiles="true" 
+        <Copy SourceFiles="@(_ResolvedFileToPublishPreserveNewest)"
+              SkipUnchangedFiles="true"
               DestinationFolder="$(AddinDir)\%(_ResolvedFileToPublishPreserveNewest.PublishDirectory)\%(RecursiveDir)"/>
 
         <Message Text="$(AssemblyName) -> $(TargetDir)publish" Importance="high"/>
     </Target>
 
-    <!-- Publishes the plugin package to the Revit Addins folder -->
     <Target Name="_PublishRevitAddin"
-            AfterTargets="_GenerateAddinPackage"
-            Condition="$(PublishAddinFiles)">
+            AfterTargets="_PublishRevitFiles"
+            Condition="$(PublishRevitAddin)">
 
         <ItemGroup>
             <AddinFiles Include="$(TargetDir)publish\Revit $(RevitVersion) $(Configuration) addin\**\*"/>
         </ItemGroup>
 
         <Copy SourceFiles="@(AddinFiles)"
-              Condition="$(PublishAddinFiles)"
               DestinationFolder="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\%(RecursiveDir)"/>
 
-        <Message Text="Publishing add-in $(AssemblyName) -> $(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName)" Importance="high"/>
+        <Message Text="Publishing add-in $(AssemblyName) -> $(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(AssemblyName)" Importance="high"/>
     </Target>
 
-    <!-- Cleans up the installed plugin files from the Revit Addins folder -->
     <Target Name="_CleanRevitAddinFolder"
             AfterTargets="Clean"
-            Condition="$(PublishAddinFiles)">
+            Condition="$(PublishRevitAddin)">
 
-        <RemoveDir Directories="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName)"/>
-        <Delete Files="$(ProgramData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName).addin"/>
+        <RemoveDir Directories="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName)"/>
+        <Delete Files="$(AppData)\Autodesk\Revit\Addins\$(RevitVersion)\$(ProjectName).addin"/>
     </Target>
 
-    <!-- Removes the generated plugin package from the publish folder -->
     <Target Name="_CleanAddinPackage"
             AfterTargets="Clean"
-            Condition="$(DisableAddinBundleGeneration) != 'true'">
+            Condition="$(PublishRevitFiles) == 'true'">
 
         <RemoveDir Directories="$(TargetDir)publish\"/>
     </Target>
