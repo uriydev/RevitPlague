@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.ProjectModel;
@@ -15,7 +13,6 @@ class Build : NukeBuild
 
     string PluginName => Solution.Name;
 
-    //  TODO: ADD CLEAN BUILD FOLDER TARGET?
     Target Compile => _ => _
         .Executes(() =>
         {
@@ -39,6 +36,7 @@ class Build : NukeBuild
                     .SetProjectFile(project.Path)
                     .SetConfiguration(configuration)
                     .SetTargets("Restore"));
+                
                 MSBuild(_ => _
                     .SetProjectFile(project.Path)
                     .SetConfiguration(configuration)
