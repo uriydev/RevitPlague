@@ -12,7 +12,7 @@ public partial class HomePage : INavigableView<HomeViewModel>
         InitializeComponent();
         DataContext = ViewModel;
         
-        ApplicationThemeManager.Apply(this);
+        ApplicationThemeManager.Apply(ApplicationTheme.Dark);
     }
     
     public HomeViewModel ViewModel { get; }
