@@ -1,24 +1,22 @@
-using System.Windows.Input;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Input;
 using Autodesk.Revit.UI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using RevitPlague.Core.Services;
 
 namespace RevitPlague.ViewModels;
 
-public class HomeViewModel
+public partial class HomeViewModel : ObservableObject
 {
     public HomeViewModel(RevitApiTaskHandler revitApiTaskHandler)
     {
         RevitApiTaskHandler = revitApiTaskHandler;
-        
-        HomeVMCommand = new RelayCommand(DeleteInstances);
     }
     
     public RevitApiTaskHandler RevitApiTaskHandler { get; }
-    public ICommand HomeVMCommand { get; }
 
+    [RelayCommand]
     private void DeleteInstances()
     {
         RevitApiTaskHandler.Run(application =>
@@ -28,7 +26,6 @@ public class HomeViewModel
             try
             {
                 var document = application.ActiveUIDocument.Document;
-
                 var pickedObjects = selection.PickObjects(ObjectType.Element);
                 
                 using var transaction = new Transaction(document, $"Delete elements");
@@ -37,7 +34,6 @@ public class HomeViewModel
                 foreach (var pickedObject in pickedObjects)
                 {
                     var elementId = pickedObject.ElementId;
-                    var element = document.GetElement(elementId);
                     document.Delete(elementId);
                 }
                 

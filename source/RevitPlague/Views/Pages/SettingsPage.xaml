@@ -25,7 +25,7 @@
             
             <Button
                 HorizontalAlignment="Center"
-                Command="{Binding PickAndZoomInstancesCommand}"
+                Command="{Binding PickAndZoomInstanceCommand}"
                 Content="Pick and Zoom Elem" />
             
         </StackPanel>
