@@ -23,7 +23,7 @@ public static class Host
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
         
-        services.AddSingleton<RevitApiTaskHandler>();
+        services.AddSingleton<RevitApiTaskExecutor>();
         
         _serviceProvider = services.BuildServiceProvider();
     }

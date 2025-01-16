@@ -3,36 +3,36 @@ using Autodesk.Revit.UI;
 namespace RevitPlague.Core.Services;
 
 /// <summary>
-/// A task handler to execute actions within the Revit API context.
+/// Handles execution of actions or functions in the Revit API context.
 /// </summary>
-public class RevitApiTaskHandler
+public class RevitApiTaskExecutor
 {
-    private readonly ExternalEventHandler _handler;
+    private readonly RevitExternalEventHandler _eventHandler;
     private readonly ExternalEvent _externalEvent;
-    private TaskCompletionSource<object>? _tcs;
+    private TaskCompletionSource<object?>? _taskCompletionSource;
 
-    public RevitApiTaskHandler()
+    public RevitApiTaskExecutor()
     {
-        _handler = new ExternalEventHandler();
-        _externalEvent = ExternalEvent.Create(_handler);
+        _eventHandler = new RevitExternalEventHandler();
+        _externalEvent = ExternalEvent.Create(_eventHandler);
     }
 
     /// <summary>
     /// Executes an action within the Revit API context.
     /// </summary>
     /// <param name="action">The action to execute.</param>
-    public Task Run(Action<UIApplication> action)
+    public Task ExecuteAsync(Action<UIApplication> action)
     {
-        _tcs = new TaskCompletionSource<object>();
+        _taskCompletionSource = new TaskCompletionSource<object?>();
 
-        _handler.SetAction(app =>
+        _eventHandler.QueueAction(app =>
         {
             action(app);
-            _tcs?.SetResult(null);
+            _taskCompletionSource?.SetResult(null);
         });
 
         _externalEvent.Raise();
-        return _tcs.Task;
+        return _taskCompletionSource.Task;
     }
 
     /// <summary>
@@ -40,18 +40,18 @@ public class RevitApiTaskHandler
     /// </summary>
     /// <typeparam name="TResult">The type of the result.</typeparam>
     /// <param name="func">The function to execute.</param>
-    public Task<TResult> Run<TResult>(Func<UIApplication, TResult> func)
+    public Task<TResult> ExecuteAsync<TResult>(Func<UIApplication, TResult> func)
     {
-        _tcs = new TaskCompletionSource<object>();
+        _taskCompletionSource = new TaskCompletionSource<object?>();
 
-        _handler.SetAction(app =>
+        _eventHandler.QueueAction(app =>
         {
             var result = func(app);
-            _tcs?.SetResult(result);
+            _taskCompletionSource?.SetResult(result);
         });
 
         _externalEvent.Raise();
-        return _tcs.Task.ContinueWith(t => (TResult)t.Result);
+        return _taskCompletionSource.Task.ContinueWith(t => (TResult)t.Result);
     }
 
     /// <summary>
@@ -59,48 +59,48 @@ public class RevitApiTaskHandler
     /// </summary>
     public void Cancel()
     {
-        _handler.ClearAction();
-        _tcs?.TrySetCanceled();
+        _eventHandler.ResetAction();
+        _taskCompletionSource?.TrySetCanceled();
     }
 
-    private class ExternalEventHandler : IExternalEventHandler
+    private class RevitExternalEventHandler : IExternalEventHandler
     {
-        private Action<UIApplication>? _action;
+        private Action<UIApplication>? _queuedAction;
 
-        public void SetAction(Action<UIApplication> action)
+        public void QueueAction(Action<UIApplication> action)
         {
-            if (_action == null)
+            if (_queuedAction == null)
             {
-                _action = action;
+                _queuedAction = action;
             }
             else
             {
-                _action += action;
+                _queuedAction += action;
             }
         }
 
-        public void ClearAction()
+        public void ResetAction()
         {
-            _action = null;
+            _queuedAction = null;
         }
 
         public void Execute(UIApplication app)
         {
-            if (_action == null) return;
+            if (_queuedAction == null) return;
 
             try
             {
-                _action(app);
+                _queuedAction(app);
             }
             finally
             {
-                ClearAction();
+                ResetAction();
             }
         }
 
         public string GetName()
         {
-            return "RevitApiTaskHandler";
+            return nameof(RevitExternalEventHandler);
         }
     }
 }

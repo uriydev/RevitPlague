@@ -8,17 +8,17 @@ namespace RevitPlague.ViewModels;
 
 public partial class SettingsViewModel : ObservableObject
 {
-    public SettingsViewModel(RevitApiTaskHandler revitApiTaskHandler)
+    public SettingsViewModel(RevitApiTaskExecutor revitApiTaskHandler)
     {
         RevitApiTaskHandler = revitApiTaskHandler;
     }
 
-    public RevitApiTaskHandler RevitApiTaskHandler { get; }
+    public RevitApiTaskExecutor RevitApiTaskHandler { get; }
 
     [RelayCommand]
     private void PickAndZoomInstance()
     {
-        RevitApiTaskHandler.Run(application =>
+        RevitApiTaskHandler.ExecuteAsync(application =>
         {
             var activeUiDocument = application.ActiveUIDocument;
             if (activeUiDocument == null)

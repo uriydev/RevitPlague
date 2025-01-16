@@ -14,7 +14,7 @@ public partial class RevitPlagueView
 
     public RevitPlagueView(
         INavigationService navigationService, 
-        RevitApiTaskHandler revitApiTaskHandler)
+        RevitApiTaskExecutor revitApiTaskHandler)
     {
         InitializeComponent();
         
@@ -27,11 +27,11 @@ public partial class RevitPlagueView
         Loaded += (_, _) => RootNavigation.Navigate(typeof(HomePage));
     }
 
-    public RevitApiTaskHandler RevitApiTaskHandler { get; }
+    public RevitApiTaskExecutor RevitApiTaskHandler { get; }
 
     private void NavigateToHome()
     {
-        RevitApiTaskHandler.Run(application =>
+        RevitApiTaskHandler.ExecuteAsync(application =>
         {
             RootNavigation.Navigate(typeof(HomePage));
         });
@@ -39,7 +39,7 @@ public partial class RevitPlagueView
 
     private void NavigateToSettings()
     {
-        RevitApiTaskHandler.Run(application =>
+        RevitApiTaskHandler.ExecuteAsync(application =>
         {
             RootNavigation.Navigate(typeof(SettingsPage));
         });
