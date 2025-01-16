@@ -17,15 +17,87 @@
     mc:Ignorable="d"
     >
 
-    <Grid>
-        <StackPanel
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            <TextBlock Text="Welcome to the Home Page" />
-            <Button
-                HorizontalAlignment="Center"
-                Command="{Binding DeleteInstancesCommand}"
-                Content="Select and Delete Elems" />
-        </StackPanel>
-    </Grid>
+    <ui:DynamicScrollViewer>
+        
+        <VirtualizingStackPanel
+            Margin="12"
+            IsVirtualizing="True"
+            VirtualizationMode="Recycling"
+            TextBlock.FontWeight="Medium">
+            <TextBlock
+                FontSize="16"
+                Text="Modules" />
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition
+                        Width="*" />
+                    <ColumnDefinition
+                        Width="*" />
+                    <ColumnDefinition
+                        Width="*" />
+                    <ColumnDefinition
+                        Width="*" />
+                </Grid.ColumnDefinitions>
+                <ui:CardAction
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,8,4,0"
+                    Icon="{ui:SymbolIcon Image24}"
+                    CommandParameter="view"
+                    Command="{Binding  DeleteInstancesCommand}">
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="Medium"
+                            Text="Delete Elems" />
+                    </StackPanel>
+                </ui:CardAction>
+                <ui:CardAction
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="4,8,4,0"
+                    Icon="{ui:SymbolIcon Document24}"
+                    CommandParameter="document"
+                    Command="{Binding  ViewModel.NavigateSnoopPageCommand}">
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="Medium"
+                            Text="Module" />
+                    </StackPanel>
+                </ui:CardAction>
+                <ui:CardAction
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="4,8,4,0"
+                    Icon="{ui:SymbolIcon Apps24}"
+                    CommandParameter="application"
+                    Command="{Binding  ViewModel.NavigateSnoopPageCommand}">
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="Medium"
+                            Text="Module" />
+                    </StackPanel>
+                </ui:CardAction>
+                <ui:CardAction
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="4,8,0,0"
+                    Icon="{ui:SymbolIcon WindowApps24}"
+                    CommandParameter="uiApplication"
+                    Command="{Binding  ViewModel.NavigateSnoopPageCommand}">
+                    <StackPanel>
+                        <TextBlock
+                            FontWeight="Medium"
+                            Text="Module" />
+                    </StackPanel>
+                </ui:CardAction>
+            </Grid>
+            
+        </VirtualizingStackPanel>
+        
+    </ui:DynamicScrollViewer>
+    
 </Page>
