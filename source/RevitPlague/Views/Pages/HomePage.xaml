@@ -25,84 +25,111 @@
         </ResourceDictionary>
     </Page.Resources>
     
-    <ui:DynamicScrollViewer>
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!-- Заголовок -->
+            <RowDefinition Height="*" /> <!-- Верхняя часть с изображением -->
+            <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
+        </Grid.RowDefinitions>
         
-        <VirtualizingStackPanel
-            Margin="12"
-            IsVirtualizing="True"
-            VirtualizationMode="Recycling"
-            TextBlock.FontWeight="Medium">
-            <TextBlock
-                FontSize="16"
-                Text="Modules" />
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition
-                        Width="*" />
-                    <ColumnDefinition
-                        Width="*" />
-                    <ColumnDefinition
-                        Width="*" />
-                    <ColumnDefinition
-                        Width="*" />
-                </Grid.ColumnDefinitions>
-                <ui:CardAction
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="0,8,4,0"
-                    Icon="{ui:SymbolIcon Image24}"
-                    CommandParameter="view"
-                    Command="{Binding  DeleteInstancesCommand}">
-                    <StackPanel>
-                        <TextBlock
-                            FontWeight="Medium"
-                            Text="Delete Elems" />
-                    </StackPanel>
-                </ui:CardAction>
-                <ui:CardAction
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="4,8,4,0"
-                    Icon="{ui:SymbolIcon Document24}"
-                    CommandParameter="document">
-                    <StackPanel>
-                        <TextBlock
-                            FontWeight="Medium"
-                            Text="Module" />
-                    </StackPanel>
-                </ui:CardAction>
-                <ui:CardAction
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    Margin="4,8,4,0"
-                    Icon="{ui:SymbolIcon Apps24}"
-                    CommandParameter="application">
-                    <StackPanel>
-                        <TextBlock
-                            FontWeight="Medium"
-                            Text="Module" />
-                    </StackPanel>
-                </ui:CardAction>
-                <ui:CardAction
-                    Grid.Row="0"
-                    Grid.Column="3"
-                    Margin="4,8,0,0"
-                    Icon="{ui:SymbolIcon WindowApps24}"
-                    CommandParameter="uiApplication">
-                    <StackPanel>
-                        <TextBlock
-                            FontWeight="Medium"
-                            Text="Module" />
-                    </StackPanel>
-                </ui:CardAction>
-            </Grid>
+        <!-- Верхняя часть с фоновым изображением -->
+        <Grid Grid.Row="1">
+            <Grid.Background>
+                <ImageBrush ImageSource="../../Resources/Images/HomePage.jpg" Stretch="UniformToFill" />
+            </Grid.Background>
             
-        </VirtualizingStackPanel>
-        
-    </ui:DynamicScrollViewer>
-    
+            <!-- Полупрозрачный черный слой для затемнения -->
+            <Rectangle Fill="Black" Opacity="0.5" />
+            
+            <!-- Заголовок -->
+            <TextBlock
+                Text="Home"
+                FontSize="24"
+                FontWeight="Bold"
+                Foreground="White"
+                Margin="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top" />
+            
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20">
+                <TextBlock Text="Coming soon"
+                           FontSize="24" FontWeight="Bold" Foreground="White" 
+                           HorizontalAlignment="Left" />
+                <TextBlock Text="Revit Plague"
+                           FontSize="36" FontWeight="Bold" Foreground="White" 
+                           HorizontalAlignment="Left" Margin="0,10,0,0" />
+                <TextBlock Text="Code with care — bugs spread like a digital plague.."
+                           FontSize="16" Foreground="GreenYellow" 
+                           HorizontalAlignment="Left" Margin="0,10,0,20" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Нижняя часть с кнопками -->
+        <ui:DynamicScrollViewer Grid.Row="2" Margin="12">
+            <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" TextBlock.FontWeight="Medium">
+                <TextBlock FontSize="16" Text="Modules" Margin="0,0,0,10" />
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <ui:CardAction
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,8,4,0"
+                        Icon="{ui:SymbolIcon Image24}"
+                        CommandParameter="view"
+                        Command="{Binding  DeleteInstancesCommand}">
+                        <StackPanel>
+                            <TextBlock FontWeight="Medium" Text="Delete Elems" />
+                        </StackPanel>
+                    </ui:CardAction>
+
+                    <ui:CardAction
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="4,8,4,0"
+                        Icon="{ui:SymbolIcon Document24}"
+                        CommandParameter="document">
+                        <StackPanel>
+                            <TextBlock FontWeight="Medium" Text="Module" />
+                        </StackPanel>
+                    </ui:CardAction>
+
+                    <ui:CardAction
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin="4,8,4,0"
+                        Icon="{ui:SymbolIcon Apps24}"
+                        CommandParameter="application">
+                        <StackPanel>
+                            <TextBlock FontWeight="Medium" Text="Module" />
+                        </StackPanel>
+                    </ui:CardAction>
+
+                    <ui:CardAction
+                        Grid.Row="0"
+                        Grid.Column="3"
+                        Margin="4,8,0,0"
+                        Icon="{ui:SymbolIcon WindowApps24}"
+                        CommandParameter="uiApplication">
+                        <StackPanel>
+                            <TextBlock FontWeight="Medium" Text="Module" />
+                        </StackPanel>
+                    </ui:CardAction>
+
+                </Grid>
+            </VirtualizingStackPanel>
+        </ui:DynamicScrollViewer>
+    </Grid>    
 </Page>
