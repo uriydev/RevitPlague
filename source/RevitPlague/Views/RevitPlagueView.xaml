@@ -25,6 +25,13 @@
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            
+            <!-- <SolidColorBrush x:Key="NavigationViewItemForegroundPointerOver" Color="Red"/> -->
+            <!-- <SolidColorBrush x:Key="NavigationViewItemForegroundSelected" Color="Red"/> -->
+            <!-- <SolidColorBrush x:Key="NavigationViewItemForegroundSelectedPointerOver" Color="Red"/> -->
+            <!-- <SolidColorBrush x:Key="NavigationViewItemForegroundPressed" Color="Red"/> -->
+            <!-- <SolidColorBrush x:Key="NavigationViewItemForegroundSelectedPressed" Color="Red"/> -->
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="GreenYellow"/>
         </ResourceDictionary>
     </ui:FluentWindow.Resources>
     
@@ -32,15 +39,19 @@
         <ui:TitleBar
             x:Name="TitleBar"
             Title="RevitPlague"
-            Margin="42,0,0,0" />
+            Grid.Row="0"
+            CloseWindowByDoubleClickOnIcon="True" />
         
         <ui:NavigationView
             x:Name="RootNavigation"
-            IsBackButtonVisible="Collapsed"
+            IsBackButtonVisible="Visible"
             PaneDisplayMode="Left"
             OpenPaneLength="159"
             BreadcrumbBar="{Binding ElementName=BreadcrumbBar}"
-            TitleBar="{Binding ElementName=TitleBar, Mode=OneWay}">
+            TitleBar="{Binding ElementName=TitleBar, Mode=OneWay}"
+            FrameMargin="0"
+            IsPaneToggleVisible="True"
+            >
             
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem
@@ -57,13 +68,15 @@
                     Icon="{ui:SymbolIcon Settings24}" />
             </ui:NavigationView.FooterMenuItems>
             
+            <!-- <ui:NavigationView.Header> -->
+            <!--     <ui:BreadcrumbBar -->
+            <!--         x:Name="BreadcrumbBar" -->
+            <!--         Margin="12 12 0 0" /> -->
+            <!-- </ui:NavigationView.Header> -->
             <ui:NavigationView.Header>
-                <ui:BreadcrumbBar
-                    x:Name="BreadcrumbBar"
-                    Margin="12 12 0 0" />
+                <Grid Height="0" />
             </ui:NavigationView.Header>
             
         </ui:NavigationView>
-
     </Grid>
 </ui:FluentWindow>
