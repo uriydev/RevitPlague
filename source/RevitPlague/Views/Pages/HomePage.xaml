@@ -29,7 +29,7 @@
         <!-- Определение строк -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /> <!-- Заголовок -->
-            <RowDefinition Height="*" /> <!-- Верхняя часть с изображением -->
+            <RowDefinition Height="200" /> <!-- Верхняя часть с изображением -->
             <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
         </Grid.RowDefinitions>
         
@@ -53,9 +53,6 @@
                 VerticalAlignment="Top" />
             
             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="20">
-                <TextBlock Text="Coming soon"
-                           FontSize="24" FontWeight="Bold" Foreground="White" 
-                           HorizontalAlignment="Left" />
                 <TextBlock Text="Revit Plague"
                            FontSize="36" FontWeight="Bold" Foreground="White" 
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
@@ -85,10 +82,9 @@
                         Grid.Column="0"
                         Margin="0,8,4,0"
                         Icon="{ui:SymbolIcon Image24}"
-                        CommandParameter="view"
                         Command="{Binding  DeleteInstancesCommand}">
                         <StackPanel>
-                            <TextBlock FontWeight="Medium" Text="Delete Elems" />
+                            <TextBlock FontWeight="Medium" Text="Delete Elements" />
                         </StackPanel>
                     </ui:CardAction>
 
@@ -96,10 +92,9 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Margin="4,8,4,0"
-                        Icon="{ui:SymbolIcon Document24}"
-                        CommandParameter="document">
+                        Icon="{ui:SymbolIcon Document24}">
                         <StackPanel>
-                            <TextBlock FontWeight="Medium" Text="Module" />
+                            <TextBlock FontWeight="Medium" Text="Content" />
                         </StackPanel>
                     </ui:CardAction>
 
@@ -107,10 +102,9 @@
                         Grid.Row="0"
                         Grid.Column="2"
                         Margin="4,8,4,0"
-                        Icon="{ui:SymbolIcon Apps24}"
-                        CommandParameter="application">
+                        Icon="{ui:SymbolIcon Apps24}">
                         <StackPanel>
-                            <TextBlock FontWeight="Medium" Text="Module" />
+                            <TextBlock FontWeight="Medium" Text="Content" />
                         </StackPanel>
                     </ui:CardAction>
 
@@ -118,10 +112,9 @@
                         Grid.Row="0"
                         Grid.Column="3"
                         Margin="4,8,0,0"
-                        Icon="{ui:SymbolIcon WindowApps24}"
-                        CommandParameter="uiApplication">
+                        Icon="{ui:SymbolIcon WindowApps24}">
                         <StackPanel>
-                            <TextBlock FontWeight="Medium" Text="Module" />
+                            <TextBlock FontWeight="Medium" Text="Content" />
                         </StackPanel>
                     </ui:CardAction>
 

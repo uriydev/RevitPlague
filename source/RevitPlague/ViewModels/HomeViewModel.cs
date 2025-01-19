@@ -9,17 +9,18 @@ namespace RevitPlague.ViewModels;
 
 public partial class HomeViewModel : ObservableObject
 {
-    public HomeViewModel(RevitApiTaskExecutor revitApiTaskHandler)
+    public HomeViewModel(RevitApiTaskExecutor revitApiTaskExecutor)
     {
-        RevitApiTaskHandler = revitApiTaskHandler;
+        RevitApiTaskExecutor = revitApiTaskExecutor;
     }
     
-    public RevitApiTaskExecutor RevitApiTaskHandler { get; }
+    public RevitApiTaskExecutor RevitApiTaskExecutor { get; }
 
+    
     [RelayCommand]
     private void DeleteInstances()
     {
-        RevitApiTaskHandler.ExecuteAsync(application =>
+        RevitApiTaskExecutor.ExecuteAsync(application =>
         {
             var selection = application.ActiveUIDocument.Selection;
 
