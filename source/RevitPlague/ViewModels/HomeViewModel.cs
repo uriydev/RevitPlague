@@ -20,13 +20,13 @@ public partial class HomeViewModel : ObservableObject
     [RelayCommand]
     private void DeleteInstances()
     {
-        RevitApiTaskExecutor.ExecuteAsync(application =>
+        RevitApiTaskExecutor.ExecuteAsync(app =>
         {
-            var selection = application.ActiveUIDocument.Selection;
+            var selection = app.ActiveUIDocument.Selection;
 
             try
             {
-                var document = application.ActiveUIDocument.Document;
+                var document = app.ActiveUIDocument.Document;
                 var pickedObjects = selection.PickObjects(ObjectType.Element);
                 
                 using var transaction = new Transaction(document, $"Delete elements");
