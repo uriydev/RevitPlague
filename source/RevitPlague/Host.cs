@@ -22,6 +22,8 @@ public static class Host
         services.AddTransient<HomePage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
+        services.AddTransient<FamilyUpdaterViewModel>();
+        services.AddTransient<FamilyUpdater>();
         
         services.AddSingleton<RevitApiTaskExecutor>();
         
