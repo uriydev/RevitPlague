@@ -75,6 +75,9 @@
 
         <!-- UI -->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
+        
+        <!-- ON TESTING -->
+        <PackageReference Include="System.Windows.Forms" Version="4.0.0" />
     </ItemGroup>
 
     <!-- Run/Debug -->
@@ -168,5 +171,5 @@
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
     </ItemGroup>
-
+    
 </Project>
