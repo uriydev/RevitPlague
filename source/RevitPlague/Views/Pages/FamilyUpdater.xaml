@@ -15,94 +15,133 @@
       mc:Ignorable="d"
       >
 
-      <Grid>
-    <!-- Определение строк -->
-    <Grid.RowDefinitions>
-        <RowDefinition Height="150" /> <!-- Верхняя часть с изображением -->
-        <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
-    </Grid.RowDefinitions>
-    
-    <!-- Верхняя часть с фоновым изображением и градиентом -->
-    <Border
-        Grid.Row="0"
-        CornerRadius="8"
-        Margin="12">
+    <Grid>
+        <!-- Определение строк -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150" /> <!-- Верхняя часть с изображением -->
+            <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
+        </Grid.RowDefinitions>
         
-        <!-- Фоновое изображение -->
-        <Border.Background>
-            <ImageBrush
-                ImageSource="../../Resources/Images/HomePage.jpg"
-                RenderOptions.BitmapScalingMode="HighQuality"
-                Stretch="UniformToFill" />
-        </Border.Background>
-        
-        <!-- Градиентный слой для затемнения -->
-        <Border CornerRadius="8">
+        <!-- Верхняя часть с фоновым изображением и градиентом -->
+        <Border
+            Grid.Row="0"
+            CornerRadius="8"
+            Margin="12">
+            
+            <!-- Фоновое изображение -->
             <Border.Background>
-                <RadialGradientBrush>
-                    <GradientStop Offset="0" Color="#1F000000" /> <!-- Прозрачный черный -->
-                    <GradientStop Offset="1" Color="#4F000000" /> <!-- Более насыщенный черный -->
-                </RadialGradientBrush>
+                <ImageBrush
+                    ImageSource="../../Resources/Images/HomePage.jpg"
+                    RenderOptions.BitmapScalingMode="HighQuality"
+                    Stretch="UniformToFill" />
             </Border.Background>
             
-            <!-- Заголовок -->
-            <TextBlock
-                Text="Family Updater"
-                FontSize="24"
-                FontWeight="Bold"
-                Foreground="White"
-                Margin="20"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center" />
-        </Border>
-    </Border>
-
-    <!-- Нижняя часть с кнопками -->
-    <ui:DynamicScrollViewer Grid.Row="1" Margin="12">
-        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" TextBlock.FontWeight="Medium">
-            
-            <Border 
-                Padding="16"
-                Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ui:ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                CornerRadius="8">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-    
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" /> <!-- Верхняя часть с изображением -->
-                        <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
-                    </Grid.RowDefinitions>
-    
-                    <ui:TextBlock 
-                        Grid.Row="0" 
-                        Text="Choose families library folder" />
-    
-                    <ui:Button
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Command="{Binding OpenFolderCommand}"
-                        Content="Open a folder" />
-    
-                    <StackPanel
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="16,0,0,0"
-                        VerticalAlignment="Center"
-                        Visibility="{Binding OpenedFolderPathVisibility}">
-                        <ui:TextBlock Text="Picked folder:" />
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding OpenedFolderPath}" />
-                    </StackPanel>
-                </Grid>
+            <!-- Градиентный слой для затемнения -->
+            <Border CornerRadius="8">
+                <Border.Background>
+                    <RadialGradientBrush>
+                        <GradientStop Offset="0" Color="#1F000000" /> <!-- Прозрачный черный -->
+                        <GradientStop Offset="1" Color="#4F000000" /> <!-- Более насыщенный черный -->
+                    </RadialGradientBrush>
+                </Border.Background>
+                
+                <!-- Заголовок -->
+                <TextBlock
+                    Text="Family Updater"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Margin="20"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center" />
             </Border>
-            
-        </VirtualizingStackPanel>
-    </ui:DynamicScrollViewer>
-</Grid>
-      
+        </Border>
+
+        <!-- Нижняя часть с кнопками -->
+        <ui:DynamicScrollViewer Grid.Row="1" Margin="12">
+            <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" TextBlock.FontWeight="Medium">
+                
+                <Border 
+                    Padding="16"
+                    Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ui:ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" /> <!-- Верхняя часть с изображением -->
+                            <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
+                            <RowDefinition Height="Auto" /> <!-- Нижняя часть с кнопками -->
+                        </Grid.RowDefinitions>
+        
+                        <ui:TextBlock 
+                            Grid.Row="0" 
+                            Text="Choose families library folder" />
+        
+                        <ui:Button
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Command="{Binding OpenFolderCommand}"
+                            Content="Open a folder" />
+        
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="16,0,0,0"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding OpenedFolderPathVisibility}">
+                            <ui:TextBlock Text="Picked folder:" />
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding OpenedFolderPath}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <Border 
+                    Padding="16"
+                    Background="{ui:ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ui:ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+        
+                        <ui:TextBlock 
+                            Grid.Row="0" 
+                            Text="Choose file" />
+                        
+                        <ui:Button
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Command="{Binding OpenFileCommand}"
+                            Content="Load Family" />
+        
+                        <StackPanel
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="16,0,0,0"
+                            VerticalAlignment="Center"
+                            Visibility="{Binding OpenedFilePathVisibility}">
+                            <ui:TextBlock Text="Picked file:" />
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding OpenedFilePath}" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+            </VirtualizingStackPanel>
+        </ui:DynamicScrollViewer>
+    </Grid>
 </Page>

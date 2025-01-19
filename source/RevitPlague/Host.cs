@@ -1,5 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using RevitPlague.Core.Services;
+using RevitPlague.Services;
+using RevitPlague.Services.Contracts;
 using RevitPlague.ViewModels;
 using RevitPlague.Views;
 using RevitPlague.Views.Pages;
@@ -24,6 +26,8 @@ public static class Host
         services.AddTransient<RevitPlagueView>();
         services.AddTransient<FamilyUpdaterViewModel>();
         services.AddTransient<FamilyUpdater>();
+
+        services.AddTransient<IFamilyLoaderServiceFactory, FamilyLoaderServiceFactory>();
         
         services.AddSingleton<RevitApiTaskExecutor>();
         
