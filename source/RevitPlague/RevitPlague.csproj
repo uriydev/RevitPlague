@@ -17,7 +17,6 @@
         <PublishRevitFiles>true</PublishRevitFiles>
     </PropertyGroup>
 
-    <!-- Revit versions -->
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
         <RevitVersion>2021</RevitVersion>
         <TargetFramework>net48</TargetFramework>
@@ -54,9 +53,8 @@
         <DebugType>none</DebugType>
     </PropertyGroup>
 
-    <!-- NuGet -->
     <ItemGroup>
-        <!-- Revit references -->
+        <!--Revit references-->
         <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.AdWindows" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*"/>
@@ -64,30 +62,27 @@
         <PackageReference Include="Nice3point.Revit.Api.UIFramework" Version="$(RevitVersion).*"/>
         <PackageReference Include="Nice3point.Revit.Api.UIFrameworkServices" Version="$(RevitVersion).*"/>
         
-        <!-- MVVM -->
+        <!--MVVM-->
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.*"/>
 
-        <!-- DI -->
+        <!--DI-->
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
 
-        <!-- IOC -->
+        <!--IOC-->
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 
-        <!-- UI -->
+        <!--UI-->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
         
-        <!-- ON TESTING -->
         <PackageReference Include="System.Windows.Forms" Version="4.0.0" />
     </ItemGroup>
 
-    <!-- Run/Debug -->
     <PropertyGroup>
         <StartAction>Program</StartAction>
         <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
         <StartArguments>/language ENG</StartArguments>
     </PropertyGroup>
     
-    <!-- Targets for publishing and cleaning up the add-in -->
     <PropertyGroup>
         <PublishRevitAddin Condition="'$(PublishRevitAddin)' == ''">false</PublishRevitAddin>
 <!--        <PublishRevitFiles Condition="'$(PublishRevitFiles)' == ''">false</PublishRevitFiles>-->
@@ -159,14 +154,12 @@
         <RemoveDir Directories="$(TargetDir)publish\"/>
     </Target>
 
-    <!-- Resources -->
     <ItemGroup>
         <Resource Include="Resources\Icons\RibbonIcon16.png" />
         <Resource Include="Resources\Icons\RibbonIcon32.png" />
         <Resource Include="Resources\Images\HomePage.jpg" />
     </ItemGroup>
 
-    <!-- App -->
     <ItemGroup>
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
