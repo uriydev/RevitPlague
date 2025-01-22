@@ -1,4 +1,4 @@
-using System.Windows.Forms;
+// using System.Windows.Forms;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -34,33 +34,33 @@ public partial class FamilyUpdaterViewModel : ObservableObject
     [ObservableProperty]
     private string _openedFilePath = string.Empty;
     
-    [RelayCommand]
-    private void OpenFolder()
-    {
-        using var folderDialog = new FolderBrowserDialog();
-        folderDialog.Description = "Choose a folder";
-        DialogResult result = folderDialog.ShowDialog();
-        if (result != DialogResult.OK || string.IsNullOrWhiteSpace(folderDialog.SelectedPath)) return;
-        OpenedFolderPath = folderDialog.SelectedPath;
-        
-        OpenedFolderPathVisibility = Visibility.Visible;
-    }
+    // [RelayCommand]
+    // private void OpenFolder()
+    // {
+    //     using var folderDialog = new FolderBrowserDialog();
+    //     folderDialog.Description = "Choose a folder";
+    //     DialogResult result = folderDialog.ShowDialog();
+    //     if (result != DialogResult.OK || string.IsNullOrWhiteSpace(folderDialog.SelectedPath)) return;
+    //     OpenedFolderPath = folderDialog.SelectedPath;
+    //     
+    //     OpenedFolderPathVisibility = Visibility.Visible;
+    // }
     
-    [RelayCommand]
-    private void OpenFile()
-    {
-        using var fileDialog = new OpenFileDialog();
-        fileDialog.Title = "Choose a file";
-        fileDialog.Filter = "All Files (*.*)|*.*";
-    
-        DialogResult result = fileDialog.ShowDialog();
-        if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fileDialog.FileName)) return;
-    
-        OpenedFilePath = fileDialog.FileName;
-        OpenedFilePathVisibility = Visibility.Visible;
-
-        LoadFamily(OpenedFilePath);
-    }
+    // [RelayCommand]
+    // private void OpenFile()
+    // {
+    //     using var fileDialog = new OpenFileDialog();
+    //     fileDialog.Title = "Choose a file";
+    //     fileDialog.Filter = "All Files (*.*)|*.*";
+    //
+    //     DialogResult result = fileDialog.ShowDialog();
+    //     if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fileDialog.FileName)) return;
+    //
+    //     OpenedFilePath = fileDialog.FileName;
+    //     OpenedFilePathVisibility = Visibility.Visible;
+    //
+    //     LoadFamily(OpenedFilePath);
+    // }
 
     private void LoadFamily(string filePath)
     {

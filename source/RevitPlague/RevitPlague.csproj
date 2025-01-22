@@ -16,7 +16,7 @@
         <PublishRevitAddin>true</PublishRevitAddin>
         <PublishRevitFiles>true</PublishRevitFiles>
     </PropertyGroup>
-
+    
     <PropertyGroup Condition="$(Configuration.Contains('R21'))">
         <RevitVersion>2021</RevitVersion>
         <TargetFramework>net48</TargetFramework>
@@ -74,7 +74,7 @@
         <!--UI-->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
         
-        <PackageReference Include="System.Windows.Forms" Version="4.0.0" />
+<!--        <PackageReference Include="System.Windows.Forms" Version="4.0.0" />-->
     </ItemGroup>
 
     <PropertyGroup>
