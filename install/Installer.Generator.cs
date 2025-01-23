@@ -9,6 +9,7 @@ namespace Installer;
 
 public static class Generator
 {
+    // public static WixEntity[] GenerateWixEntities(IEnumerable<string> args, string version)
     public static WixEntity[] GenerateWixEntities(IEnumerable<string> args)
     {
         var entities = new List<WixEntity>();

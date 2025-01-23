@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <Version>1.0.0.0</Version>
+        <FileVersion>1.0.0.0</FileVersion>
+    </PropertyGroup>
+    
+    <PropertyGroup>
         <UseWPF>true</UseWPF>
         <NoWarn>CS8826, CS8632</NoWarn>
         <LangVersion>latest</LangVersion>
@@ -74,6 +79,7 @@
         <!--UI-->
         <PackageReference Include="WPF-UI" Version="3.0.5" />
         
+        <!--ONTESTING-->
 <!--        <PackageReference Include="System.Windows.Forms" Version="4.0.0" />-->
     </ItemGroup>
 
