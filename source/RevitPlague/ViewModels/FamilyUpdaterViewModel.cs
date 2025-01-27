@@ -1,4 +1,7 @@
-using System.Windows.Forms;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -12,77 +15,127 @@ namespace RevitPlague.ViewModels;
 
 public partial class FamilyUpdaterViewModel : ObservableObject
 {
+    private const string ModelJsonPath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
+
     private readonly RevitApiTaskExecutor _revitApiTaskExecutor;
     private readonly IFamilyLoaderServiceFactory _familyLoaderServiceFactory;
     private readonly FamilyChecker _familyChecker;
-    
+
     public FamilyUpdaterViewModel(
-        RevitApiTaskExecutor revitApiTaskExecutor, 
-        IFamilyLoaderServiceFactory familyLoaderServiceFactory)
+        RevitApiTaskExecutor revitApiTaskExecutor,
+        IFamilyLoaderServiceFactory familyLoaderServiceFactory,
+        FamilyChecker familyChecker)
     {
         _revitApiTaskExecutor = revitApiTaskExecutor;
         _familyLoaderServiceFactory = familyLoaderServiceFactory;
-        _familyChecker = new FamilyChecker();
+        _familyChecker = familyChecker;
     }
-    
-    [ObservableProperty]
-    private Visibility _openedFolderPathVisibility = Visibility.Collapsed;
-    
+
     [ObservableProperty]
     private Visibility _openedFilePathVisibility = Visibility.Collapsed;
 
     [ObservableProperty]
-    private string _openedFolderPath = string.Empty;
-    
-    [ObservableProperty]
     private string _openedFilePath = string.Empty;
-    
-    [RelayCommand]
-    private void OpenFolder()
-    {
-        using var folderDialog = new FolderBrowserDialog();
-        folderDialog.Description = "Choose a folder";
-        DialogResult result = folderDialog.ShowDialog();
-        if (result != DialogResult.OK || string.IsNullOrWhiteSpace(folderDialog.SelectedPath)) return;
-        OpenedFolderPath = folderDialog.SelectedPath;
-        
-        OpenedFolderPathVisibility = Visibility.Visible;
-    }
-    
-    [RelayCommand]
-    private void OpenFile()
-    {
-        using var fileDialog = new OpenFileDialog();
-        fileDialog.Title = "Choose a file";
-        fileDialog.Filter = "All Files (*.*)|*.*";
-    
-        DialogResult result = fileDialog.ShowDialog();
-        if (result != DialogResult.OK || string.IsNullOrWhiteSpace(fileDialog.FileName)) return;
-    
-        OpenedFilePath = fileDialog.FileName;
-        OpenedFilePathVisibility = Visibility.Visible;
-    
-        LoadFamily(OpenedFilePath);
-    }
-    
+
+    [ObservableProperty]
+    private ObservableCollection<Product> _productsCollection = new();
+
     [RelayCommand]
     private void LoadFamily(string filePath)
     {
         _revitApiTaskExecutor.ExecuteAsync(app =>
         {
-            UIDocument uiDocument = app.ActiveUIDocument;
-            Document document = uiDocument.Document;
+            var document = app.ActiveUIDocument.Document;
 
             // Загружаем семейство
-            IFamilyLoaderService familyLoaderService = _familyLoaderServiceFactory.Create(document);
+            var familyLoaderService = _familyLoaderServiceFactory.Create(document);
             familyLoaderService.LoadFamily(filePath);
-
-            // Проверка актуальности семейства
-            FamilyChecker familyChecker = new FamilyChecker();
-            familyChecker.CheckFamilyParameters();
-
-            // Используем TaskDialog для вывода результата
-            TaskDialog.Show("Проверка семейств", "Проверка завершена. Результаты сохранены в лог.");
         });
     }
+
+    [RelayCommand]
+    private void CheckFamilyLibrary()
+    {
+        _revitApiTaskExecutor.ExecuteAsync(app =>
+        {
+            Document document = app.ActiveUIDocument.Document;
+            var familyDataList = _familyChecker.CheckFamilyParameters(document);
+
+            if (familyDataList == null)
+            {
+                TaskDialog.Show("Ошибка", "Не удалось проверить актуальность семейств.");
+                return;
+            }
+
+            UpdateProductsCollection(familyDataList);
+            TaskDialog.Show("Проверка семейств", "Проверка завершена.");
+        });
+    }
+
+    [RelayCommand]
+    private void LoadDataFromJson()
+    {
+        try
+        {
+            if (!File.Exists(ModelJsonPath))
+            {
+                TaskDialog.Show("Ошибка", "Файл не найден.");
+                return;
+            }
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            var familyDataList = JsonSerializer.Deserialize<List<FamilyData>>(File.ReadAllText(ModelJsonPath), options);
+
+            if (familyDataList == null)
+            {
+                TaskDialog.Show("Ошибка", "Не удалось загрузить данные из файла.");
+                return;
+            }
+
+            UpdateProductsCollection(familyDataList);
+        }
+        catch (Exception ex)
+        {
+            TaskDialog.Show("Ошибка", $"Не удалось загрузить данные: {ex.Message}");
+        }
+    }
+
+    private void UpdateProductsCollection(List<FamilyData> familyDataList)
+    {
+        ProductsCollection = new ObservableCollection<Product>(
+            familyDataList.Select(f => new Product
+            {
+                FamilyName = f.FamilyName,
+                FUID = f.FUID,
+                Types = string.Join(", ", f.Types.Select(t => t.TypeName)),
+                IsActual = f.IsActual
+            }).ToList()
+        );
+    }
+}
+
+public class Product
+{
+    public string FamilyName { get; set; }
+    public string FUID { get; set; }
+    public string Types { get; set; } // Типы семейства (объединены в строку)
+    public bool IsActual { get; set; } // Галочка актуальности
+}
+
+public class FamilyData
+{
+    public string FUID { get; set; }
+    public string FamilyName { get; set; }
+    public List<FamilyType> Types { get; set; } = new();
+    public bool IsActual { get; set; } // Галочка актуальности
+}
+
+public class FamilyType
+{
+    public string TypeName { get; set; }
 }

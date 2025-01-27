@@ -28,6 +28,7 @@ public static class Host
         services.AddTransient<FamilyUpdater>();
 
         services.AddTransient<IFamilyLoaderServiceFactory, FamilyLoaderServiceFactory>();
+        services.AddTransient<FamilyChecker>();
         
         services.AddSingleton<RevitApiTaskExecutor>();
         

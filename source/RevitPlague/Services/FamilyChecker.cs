@@ -1,109 +1,124 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+using RevitPlague.ViewModels;
+using FamilyType = RevitPlague.ViewModels.FamilyType;
 
 namespace RevitPlague.Services;
 
 public class FamilyChecker
 {
-    private readonly string modelJsonPath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
-    private readonly string libraryJsonPath = @"C:\_bim\FamilyUpdaterTest\Library_FamilyParameters.json";
-
-    public void CheckFamilyParameters()
+    private readonly string _modelJsonPath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
+    private readonly string _libraryJsonPath = @"C:\_bim\FamilyUpdaterTest\Library_FamilyParameters.json";
+    
+    public List<FamilyData> CheckFamilyParameters(Document document)
+{
+    try
     {
-        // Путь к файлу лога
-        string logDirectory = @"C:\_bim\FamilyUpdaterTest\_logs";
-        string logFilePath = Path.Combine(logDirectory, "log.txt");
-
-        // Проверяем, существует ли директория для логов, если нет — создаём
-        if (!Directory.Exists(logDirectory))
+        // Создаем файл _modelJsonPath, если он отсутствует
+        if (!File.Exists(_modelJsonPath))
         {
-            Directory.CreateDirectory(logDirectory);
+            File.WriteAllText(_modelJsonPath, "[]");
         }
 
-        // Создаём или открываем лог файл для записи
-        using (StreamWriter writer = new StreamWriter(logFilePath, true))
+        // Читаем данные из библиотеки
+        var libraryData = ReadJsonFile(_libraryJsonPath);
+
+        if (libraryData == null)
         {
-            // Считываем данные из файлов
-            var modelData = ReadJsonFile(modelJsonPath);
-            var libraryData = ReadJsonFile(libraryJsonPath);
+            TaskDialog.Show("Ошибка", "Не удалось прочитать данные из библиотеки.");
+            return new List<FamilyData>();
+        }
 
-            // Сравнение данных
-            var discrepancies = CompareFamilyParameters(modelData, libraryData);
+        // Получаем все семейства в документе
+        var families = new FilteredElementCollector(document)
+            .OfClass(typeof(Family))
+            .Cast<Family>()
+            .ToList();
 
-            // Записываем результат в лог
-            writer.WriteLine($"Проверка актуальности семейств ({DateTime.Now})");
+        var modelData = new List<FamilyData>();
 
-            // Вывод результатов
-            if (discrepancies.Any())
+        // Проверяем каждое семейство
+        foreach (var family in families)
+        {
+            var familyTypes = GetFamilyTypes(document, family);
+
+            if (familyTypes.Count == 0)
             {
-                writer.WriteLine("Найдены несоответствия:");
-                foreach (var discrepancy in discrepancies)
-                {
-                    writer.WriteLine($"Семейство: {discrepancy.FamilyName}, Тип: {discrepancy.TypeName}");
-                    writer.WriteLine($"GUID в модели: {discrepancy.ModelGUID}");
-                    writer.WriteLine($"Актуальный GUID: {discrepancy.LibraryGUID}");
-                    writer.WriteLine("------------------------");
-                }
-            }
-            else
-            {
-                writer.WriteLine("Все семейства актуальны.");
+                continue; // Пропускаем семейства без типоразмеров
             }
 
-            writer.WriteLine("============================================");
+            // Получаем FUID из первого типоразмера (он одинаковый для всех типоразмеров)
+            var firstType = familyTypes.First();
+            var fuidParameter = firstType.LookupParameter("FUID");
+
+            if (fuidParameter == null || fuidParameter.StorageType != StorageType.String)
+            {
+                continue; // Пропускаем семейства без параметра FUID
+            }
+
+            string fuid = fuidParameter.AsString();
+
+            // Проверяем, есть ли FUID в библиотеке
+            var libraryFamily = libraryData.FirstOrDefault(f => f.FUID == fuid);
+            bool isActual = libraryFamily != null;
+
+            // Добавляем данные в список
+            modelData.Add(new FamilyData
+            {
+                FUID = fuid,
+                FamilyName = family.Name,
+                Types = familyTypes.Select(t => new FamilyType { TypeName = t.Name }).ToList(),
+                IsActual = isActual
+            });
+        }
+
+        // Сохраняем обновленные данные
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+        File.WriteAllText(_modelJsonPath, JsonSerializer.Serialize(modelData, options));
+
+        return modelData;
+    }
+    catch (Exception ex)
+    {
+        TaskDialog.Show("Ошибка", $"Ошибка при проверке актуальности семейств: {ex.Message}");
+        return new List<FamilyData>();
+    }
+}
+    
+    private List<FamilyData> ReadJsonFile(string filePath)
+    {
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                File.WriteAllText(filePath, "[]");
+                return new List<FamilyData>();
+            }
+
+            var jsonContent = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<List<FamilyData>>(jsonContent) ?? new List<FamilyData>();
+        }
+        catch (Exception ex)
+        {
+            TaskDialog.Show("Ошибка", $"Не удалось прочитать файл {filePath}: {ex.Message}");
+            return null;
         }
     }
     
-    private List<FamilyParameter> ReadJsonFile(string filePath)
+    private List<ElementType> GetFamilyTypes(Document doc, Family family)
     {
-        if (!File.Exists(filePath))
-            throw new FileNotFoundException($"Файл {filePath} не найден.");
-
-        string jsonContent = File.ReadAllText(filePath);
-        return JsonSerializer.Deserialize<List<FamilyParameter>>(jsonContent) ?? new List<FamilyParameter>();
-    }
-
-    private List<Discrepancy> CompareFamilyParameters(List<FamilyParameter> modelData, List<FamilyParameter> libraryData)
-    {
-        var discrepancies = new List<Discrepancy>();
-
-        foreach (var modelParam in modelData)
-        {
-            // Ищем соответствующий элемент в библиотеке
-            var libraryParam = libraryData.FirstOrDefault(l =>
-                l.FamilyName == modelParam.FamilyName &&
-                l.TypeName == modelParam.TypeName);
-
-            // Если элемент найден, проверяем GUID
-            if (libraryParam != null && libraryParam.CustomGUID != modelParam.CustomGUID)
-            {
-                discrepancies.Add(new Discrepancy
-                {
-                    FamilyName = modelParam.FamilyName,
-                    TypeName = modelParam.TypeName,
-                    ModelGUID = modelParam.CustomGUID,
-                    LibraryGUID = libraryParam.CustomGUID
-                });
-            }
-        }
-
-        return discrepancies;
-    }
-
-    // Класс для параметров семейства
-    private class FamilyParameter
-    {
-        public string FamilyName { get; set; }
-        public string TypeName { get; set; }
-        public string CustomGUID { get; set; }
-    }
-
-    // Класс для несоответствий
-    private class Discrepancy
-    {
-        public string FamilyName { get; set; }
-        public string TypeName { get; set; }
-        public string ModelGUID { get; set; }
-        public string LibraryGUID { get; set; }
+        return family.GetFamilySymbolIds()
+            .Select(id => doc.GetElement(id) as ElementType)
+            .Where(type => type != null)
+            .ToList();
     }
 }

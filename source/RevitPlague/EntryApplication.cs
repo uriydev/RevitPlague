@@ -8,17 +8,20 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows.Media.Imaging;
+using RevitPlague.Services;
+using RevitPlague.ViewModels;
+using FamilyType = Autodesk.Revit.DB.FamilyType;
 
 namespace RevitPlague;
 
 public class EntryApplication : IExternalApplication
 {
-    private readonly string jsonFilePath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
+    private readonly string _modelJsonPath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
+    private readonly string _libraryJsonPath = @"C:\_bim\FamilyUpdaterTest\Library_FamilyParameters.json";
     
     public Result OnStartup(UIControlledApplication application)
     {
         Host.Start();
-        
         #region Ribbon Panel
         
         RibbonPanel ribbonPanel = application.CreateRibbonPanel("Revit Plague");
@@ -32,107 +35,133 @@ public class EntryApplication : IExternalApplication
         pushButton.LargeImage = largeImage;
         
         #endregion
-        
         application.ControlledApplication.DocumentChanged += OnDocumentChanged;
-        
         return Result.Succeeded;
     }
     
     public Result OnShutdown(UIControlledApplication application)
     {
         application.ControlledApplication.DocumentChanged -= OnDocumentChanged;
-        
         return Result.Succeeded;
     }
     
-        private void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
+    private void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
     {
-        Document doc = e.GetDocument();
+        var doc = e.GetDocument();
 
-        // Получаем все элементы, добавленные в документ
-        var addedElements = e.GetAddedElementIds();
-
-        foreach (var elementId in addedElements)
+        // Получаем все добавленные элементы
+        foreach (var elementId in e.GetAddedElementIds())
         {
-            Element element = doc.GetElement(elementId);
+            var element = doc.GetElement(elementId);
 
-            // Проверяем, является ли элемент семейством
+            // Проверяем, является ли элемент семейством (Family)
             if (element is Family family)
             {
-                // Извлекаем имя семейства
-                string familyName = family.Name;
-
-                // Получаем типы этого семейства
-                var familyTypes = GetFamilyTypes(doc, family);
-
-                foreach (var familyType in familyTypes)
+                // Проверяем, что семейство принадлежит категории Mechanical Equipment
+                if (IsMechanicalEquipmentFamily(family))
                 {
-                    // Ищем параметр customGUID в типе семейства
-                    string customGUID = familyType.LookupParameter("customGUID")?.AsString();
+                    var typeNames = GetFamilyTypes(doc, family).Select(t => t.Name).ToList();
 
-                    if (!string.IsNullOrEmpty(customGUID))
+                    if (typeNames.Count > 0)
                     {
-                        SaveParameterToJson(familyName, familyType.Name, customGUID, doc.Title);
+                        SaveParameterToJson(family.Name, typeNames);
                     }
                 }
             }
         }
     }
 
+    private bool IsMechanicalEquipmentFamily(Family family)
+    {
+        // Получаем категорию семейства
+        var categoryId = family.FamilyCategory?.Id.IntegerValue;
+
+        // Проверяем, что категория соответствует Mechanical Equipment
+        return categoryId == (int)BuiltInCategory.OST_MechanicalEquipment;
+    }
+    
     private List<ElementType> GetFamilyTypes(Document doc, Family family)
     {
-        // Собираем все типы семейства
-        List<ElementType> familyTypes = new List<ElementType>();
-
-        foreach (ElementId id in family.GetFamilySymbolIds())
-        {
-            ElementType type = doc.GetElement(id) as ElementType;
-            if (type != null)
-            {
-                familyTypes.Add(type);
-            }
-        }
-
-        return familyTypes;
+        return family.GetFamilySymbolIds()
+            .Select(id => doc.GetElement(id) as ElementType)
+            .Where(type => type != null)
+            .ToList();
     }
 
-    private void SaveParameterToJson(string familyName, string typeName, string customGUID, string modelName)
+    private void SaveParameterToJson(string familyName, List<string> typeNames)
     {
-        // Формируем данные для записи
-        var parameterData = new
+        try
         {
-            FamilyName = familyName,
-            TypeName = typeName,
-            CustomGUID = customGUID,
-            ModelName = modelName
-        };
+            if (!File.Exists(_libraryJsonPath))
+            {
+                TaskDialog.Show("Ошибка", $"Файл библиотеки '{_libraryJsonPath}' не найден.");
+                return;
+            }
 
-        List<object> existingData;
+            var libraryData = ReadJsonFile(_libraryJsonPath);
+            var familyData = libraryData.FirstOrDefault(f => f.FamilyName == familyName);
 
-        // Если файл существует, читаем текущие данные
-        if (File.Exists(jsonFilePath))
-        {
-            string existingJson = File.ReadAllText(jsonFilePath);
-            existingData = JsonSerializer.Deserialize<List<object>>(existingJson) ?? new List<object>();
+            if (familyData == null)
+            {
+                TaskDialog.Show("Ошибка", $"Семейство '{familyName}' отсутствует в библиотеке.");
+                return;
+            }
+
+            var existingData = ReadJsonFile(_modelJsonPath);
+            existingData.Add(new FamilyData
+            {
+                FUID = familyData.FUID,
+                FamilyName = familyName,
+                Types = typeNames.Select(t => new FamilyType { TypeName = t }).ToList(),
+                IsActual = true // Галочка актуальности
+            });
+
+            // Настройки сериализации с поддержкой кириллицы
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+
+            File.WriteAllText(_modelJsonPath, JsonSerializer.Serialize(existingData, options));
         }
-        else
+        catch (Exception ex)
         {
-            existingData = new List<object>();
+            TaskDialog.Show("Ошибка", $"Не удалось сохранить данные: {ex.Message}");
         }
+    }
 
-        // Добавляем новую запись
-        existingData.Add(parameterData);
-
-        // Настройки сериализации для читаемого текста
-        var options = new JsonSerializerOptions
+    private List<FamilyData> ReadJsonFile(string filePath)
+    {
+        try
         {
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
-        
-        // Записываем данные обратно в файл JSON
-        // string updatedJson = JsonSerializer.Serialize(existingData, new JsonSerializerOptions { WriteIndented = true });
-        string updatedJson = JsonSerializer.Serialize(existingData, options);
-        File.WriteAllText(jsonFilePath, updatedJson);
+            if (!File.Exists(filePath))
+            {
+                // Создаем пустой файл, если он отсутствует
+                File.WriteAllText(filePath, "[]");
+                return new List<FamilyData>();
+            }
+
+            var jsonContent = File.ReadAllText(filePath);
+            return JsonSerializer.Deserialize<List<FamilyData>>(jsonContent) ?? new List<FamilyData>();
+        }
+        catch (Exception ex)
+        {
+            TaskDialog.Show("Ошибка", $"Не удалось прочитать файл {filePath}: {ex.Message}");
+            return new List<FamilyData>();
+        }
+    }
+
+    private class FamilyData
+    {
+        public string FUID { get; set; }
+        public string FamilyName { get; set; }
+        public List<FamilyType> Types { get; set; } = new();
+        public bool IsActual { get; set; } // Галочка актуальности
+    }
+
+    private class FamilyType
+    {
+        public string TypeName { get; set; }
     }
 }
