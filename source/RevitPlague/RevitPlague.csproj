@@ -170,9 +170,5 @@
         <ApplicationDefinition Remove="App.xaml"/>
         <Page Include="App.xaml"/>
     </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="System.Windows.Forms" />
-    </ItemGroup>
     
 </Project>

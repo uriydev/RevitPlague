@@ -1,16 +1,10 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.DB.Events;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows.Media.Imaging;
-using RevitPlague.Services;
-using RevitPlague.ViewModels;
-using FamilyType = Autodesk.Revit.DB.FamilyType;
 
 namespace RevitPlague;
 
