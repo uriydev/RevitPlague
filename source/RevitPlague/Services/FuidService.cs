@@ -19,6 +19,13 @@ public class FuidService : IFuidService
         return Guid.NewGuid().ToString();
     }
 
+    /// <summary>
+    /// Сохраняет или обновляет данные о семействе в файле, включая его FUID, имя и типы.
+    /// Если семейство уже существует, его данные обновляются, иначе добавляется новая запись.
+    /// </summary>
+    /// <param name="familyName"></param>
+    /// <param name="fuid"></param>
+    /// <param name="types"></param>
     public void SaveOrUpdateFuid(string familyName, string fuid, IEnumerable<LibraryFamilyTypeData> types)
     {
         var filePath = _appSettings.FamilyParametersFilePath;

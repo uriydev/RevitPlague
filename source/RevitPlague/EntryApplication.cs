@@ -35,6 +35,7 @@ public class EntryApplication : IExternalApplication
         return Result.Succeeded;
     }
     
+    //  ГЕНЕРИРУЕМ FUID В MAIN DATABASE ПОСЛЕ СОХРАНЕНИЯ СЕМЕЙСТВА
     private void ControlledApplication_DocumentSaved(object sender, DocumentSavedEventArgs e)
     {
         if (e.Document.IsFamilyDocument)
@@ -63,15 +64,11 @@ public class EntryApplication : IExternalApplication
             // Проверяем, является ли элемент семейством (Family)
             if (element is Family family)
             {
-                // Проверяем, что семейство принадлежит категории Mechanical Equipment
-                if (IsMechanicalEquipmentFamily(family))
-                {
-                    var typeNames = GetFamilyTypes(doc, family).Select(t => t.Name).ToList();
+                var typeNames = GetFamilyTypes(doc, family).Select(t => t.Name).ToList();
 
-                    if (typeNames.Count > 0)
-                    {
-                        SaveParameterToJson(family.Name, typeNames);
-                    }
+                if (typeNames.Count > 0)
+                {
+                    SaveParameterToJson(family.Name, typeNames);
                 }
             }
         }
@@ -163,7 +160,7 @@ public class EntryApplication : IExternalApplication
         public string FUID { get; set; }
         public string FamilyName { get; set; }
         public List<FamilyType> Types { get; set; } = new();
-        public bool IsActual { get; set; } // Галочка актуальности
+        public bool IsActual { get; set; }
     }
 
     private class FamilyType
