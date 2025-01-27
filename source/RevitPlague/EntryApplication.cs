@@ -116,7 +116,7 @@ public class EntryApplication : IExternalApplication
                 FUID = familyData.FUID,
                 FamilyName = familyName,
                 Types = typeNames.Select(t => new FamilyType { TypeName = t }).ToList(),
-                IsActual = true // Галочка актуальности
+                IsActual = true
             });
 
             // Настройки сериализации с поддержкой кириллицы
