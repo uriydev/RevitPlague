@@ -24,13 +24,26 @@ public static class Host
         services.AddTransient<HomePage>();
         services.AddTransient<HomeViewModel>();
         services.AddTransient<RevitPlagueView>();
+        services.AddSingleton<RevitApiTaskExecutor>();
+        
+        //
         services.AddTransient<FamilyUpdaterViewModel>();
         services.AddTransient<FamilyUpdater>();
-
+        //
         services.AddTransient<IFamilyLoaderServiceFactory, FamilyLoaderServiceFactory>();
         services.AddTransient<FamilyChecker>();
+        //
+        services.AddTransient<IFileService, FileService>();
+        services.AddTransient<IFuidService, FuidService>();
+        // services.AddTransient<IFamilyParameterService, FamilyParameterService>();
+        services.AddTransient<IFamilyParameterServiceFactory, FamilyParameterServiceFactory>();
+        services.AddTransient<LibraryFamilyUpdater>();
         
-        services.AddSingleton<RevitApiTaskExecutor>();
+        var appSettings = new AppSettings
+        {
+            FamilyParametersFilePath = @"C:\_bim\FamilyUpdaterTest\Library_FamilyParameters.json"
+        };
+        services.AddSingleton(appSettings);
         
         _serviceProvider = services.BuildServiceProvider();
     }

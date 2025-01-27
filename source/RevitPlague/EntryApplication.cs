@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows.Media.Imaging;
+using RevitPlague.Services;
 
 namespace RevitPlague;
 
@@ -30,12 +31,23 @@ public class EntryApplication : IExternalApplication
         
         #endregion
         application.ControlledApplication.DocumentChanged += OnDocumentChanged;
+        application.ControlledApplication.DocumentSaved += ControlledApplication_DocumentSaved;
         return Result.Succeeded;
+    }
+    
+    private void ControlledApplication_DocumentSaved(object sender, DocumentSavedEventArgs e)
+    {
+        if (e.Document.IsFamilyDocument)
+        {
+            var familyUpdater = Host.GetService<LibraryFamilyUpdater>();
+            familyUpdater.OnFamilySaved(e.Document);
+        }
     }
     
     public Result OnShutdown(UIControlledApplication application)
     {
         application.ControlledApplication.DocumentChanged -= OnDocumentChanged;
+        application.ControlledApplication.DocumentSaved -= ControlledApplication_DocumentSaved;
         return Result.Succeeded;
     }
     
