@@ -54,9 +54,25 @@ public class FamilyHashCommand : IExternalCommand
             paramList.Sort();
             string paramData = string.Join("\n", paramList);
 
-            // Вычисляем хэш-сумму
+            // Вычисляем хэш-сумму параметров
             string parametersHash = CalculateHash(paramData);
-            TaskDialog.Show("Hash", $"Хэш параметров семейства:\n{parametersHash}");
+
+            // Собираем типы для хэширования
+            List<string> typeList = new List<string>();
+            foreach (FamilyType familyType in familyManager.Types)
+            {
+                typeList.Add(familyType.Name);
+            }
+
+            // Сортируем типы для стабильного хэша
+            typeList.Sort();
+            string typeData = string.Join("\n", typeList);
+
+            // Вычисляем хэш-сумму типов
+            string typesHash = CalculateHash(typeData);
+
+            // Выводим первые 8 символов каждого хэша
+            TaskDialog.Show("Hashes", $"Хэш параметров (первые 8 символов): {parametersHash.Substring(0, 8)}\nХэш типов (первые 8 символов): {typesHash.Substring(0, 8)}");
 
             familyDoc.Close(false);
             return Result.Succeeded;
@@ -96,4 +112,3 @@ public class FamilyHashCommand : IExternalCommand
         }
     }
 }
-
