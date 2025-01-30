@@ -1,7 +1,5 @@
-using System;
 using System.Text;
 using System.Security.Cryptography;
-using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
@@ -71,8 +69,11 @@ public class FamilyHashCommand : IExternalCommand
             // Вычисляем хэш-сумму типов
             string typesHash = CalculateHash(typeData);
 
+            // Собираем геометрию для хэширования (подсчет объектов геометрии)
+            string geometryHash = GetGeometryHash(familyDoc);
+
             // Выводим первые 8 символов каждого хэша
-            TaskDialog.Show("Hashes", $"Хэш параметров (первые 8 символов): {parametersHash.Substring(0, 8)}\nХэш типов (первые 8 символов): {typesHash.Substring(0, 8)}");
+            TaskDialog.Show("Hashes", $"Хэш параметров (первые 8 символов): {parametersHash.Substring(0, 8)}\nХэш типов (первые 8 символов): {typesHash.Substring(0, 8)}\nХэш геометрии (первые 8 символов): {geometryHash.Substring(0, 8)}");
 
             familyDoc.Close(false);
             return Result.Succeeded;
@@ -110,5 +111,29 @@ public class FamilyHashCommand : IExternalCommand
             byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
             return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
         }
+    }
+
+    private string GetGeometryHash(Document familyDoc)
+    {
+        int geometryObjectCount = 0;
+
+        // Получаем все элементы в семействе
+        FilteredElementCollector collector = new FilteredElementCollector(familyDoc).WhereElementIsNotElementType();
+        foreach (Element element in collector)
+        {
+            // Обрабатываем геометрию каждого элемента
+            GeometryElement geometryElement = element.get_Geometry(new Options());
+            if (geometryElement != null)
+            {
+                // Считаем количество геометрических объектов
+                foreach (GeometryObject geomObject in geometryElement)
+                {
+                    geometryObjectCount++;
+                }
+            }
+        }
+
+        // Возвращаем хэш на основе количества геометрических объектов
+        return CalculateHash(geometryObjectCount.ToString());
     }
 }
