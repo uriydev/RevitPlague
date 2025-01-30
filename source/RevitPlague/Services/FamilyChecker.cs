@@ -11,86 +11,100 @@ public class FamilyChecker
 {
     private readonly string _modelJsonPath = @"C:\_bim\FamilyUpdaterTest\FamilyParameters_Model01.json";
     private readonly string _libraryJsonPath = @"C:\_bim\FamilyUpdaterTest\Library_FamilyParameters.json";
-    
+
     public List<FamilyData> CheckFamilyParameters(Document document)
-{
-    try
     {
-        // Создаем файл _modelJsonPath, если он отсутствует
-        if (!File.Exists(_modelJsonPath))
+        try
         {
-            File.WriteAllText(_modelJsonPath, "[]");
+            // Проверяем существование файла _modelJsonPath, создаем его, если отсутствует
+            if (!File.Exists(_modelJsonPath))
+            {
+                File.WriteAllText(_modelJsonPath, "[]");
+            }
+
+            // Читаем данные из библиотеки и модели
+            var libraryData = ReadJsonFile(_libraryJsonPath);
+            var modelData = ReadJsonFile(_modelJsonPath);
+
+            if (libraryData == null || modelData == null)
+            {
+                // TaskDialog.Show("Ошибка", "Не удалось прочитать данные из библиотеки или модели.");
+                return new List<FamilyData>();
+            }
+
+            // Получаем все семейства в документе
+            var families = new FilteredElementCollector(document)
+                .OfClass(typeof(Family))
+                .Cast<Family>()
+                .ToList();
+
+            var resultData = new List<FamilyData>();
+
+            // Проверяем каждое семейство
+            foreach (var family in families)
+            {
+                var familyName = family.Name;
+
+                // Ищем семейство в библиотеке
+                var libraryFamily = libraryData.FirstOrDefault(f => f.FamilyName == familyName);
+
+                if (libraryFamily == null)
+                {
+                    // TaskDialog.Show("Предупреждение", $"Семейство '{familyName}' отсутствует в библиотеке.");
+                    resultData.Add(new FamilyData
+                    {
+                        FamilyName = familyName,
+                        IsActual = false,
+                        FUID = null // FUID = null, если семейство отсутствует в библиотеке
+                    });
+                    continue;
+                }
+
+                // Ищем семейство в данных модели
+                var modelFamily = modelData.FirstOrDefault(f => f.FamilyName == familyName);
+
+                if (modelFamily == null)
+                {
+                    // TaskDialog.Show("Предупреждение", $"Семейство '{familyName}' отсутствует в модели.");
+                    resultData.Add(new FamilyData
+                    {
+                        FamilyName = familyName,
+                        IsActual = false,
+                        FUID = null // FUID = null, если семейство отсутствует в модели
+                    });
+                    continue;
+                }
+
+                // Сравниваем FUID из библиотеки и модели
+                bool isActual = libraryFamily.FUID == modelFamily.FUID;
+
+                // Добавляем данные в список
+                resultData.Add(new FamilyData
+                {
+                    FUID = isActual ? libraryFamily.FUID : null, // FUID = null, если семейство неактуальное
+                    FamilyName = familyName,
+                    Types = GetFamilyTypes(document, family).Select(t => new FamilyType { TypeName = t.Name }).ToList(),
+                    IsActual = isActual
+                });
+            }
+
+            // Сохраняем обновленные данные
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+            File.WriteAllText(_modelJsonPath, JsonSerializer.Serialize(resultData, options));
+
+            return resultData;
         }
-
-        // Читаем данные из библиотеки
-        var libraryData = ReadJsonFile(_libraryJsonPath);
-
-        if (libraryData == null)
+        catch (Exception ex)
         {
-            TaskDialog.Show("Ошибка", "Не удалось прочитать данные из библиотеки.");
+            TaskDialog.Show("Ошибка", $"Ошибка при проверке актуальности семейств: {ex.Message}");
             return new List<FamilyData>();
         }
-
-        // Получаем все семейства в документе
-        var families = new FilteredElementCollector(document)
-            .OfClass(typeof(Family))
-            .Cast<Family>()
-            .ToList();
-
-        var modelData = new List<FamilyData>();
-
-        // Проверяем каждое семейство
-        foreach (var family in families)
-        {
-            var familyTypes = GetFamilyTypes(document, family);
-
-            if (familyTypes.Count == 0)
-            {
-                continue; // Пропускаем семейства без типоразмеров
-            }
-
-            // Получаем FUID из первого типоразмера (он одинаковый для всех типоразмеров)
-            var firstType = familyTypes.First();
-            var fuidParameter = firstType.LookupParameter("FUID");
-
-            if (fuidParameter == null || fuidParameter.StorageType != StorageType.String)
-            {
-                continue; // Пропускаем семейства без параметра FUID
-            }
-
-            string fuid = fuidParameter.AsString();
-
-            // Проверяем, есть ли FUID в библиотеке
-            var libraryFamily = libraryData.FirstOrDefault(f => f.FUID == fuid);
-            bool isActual = libraryFamily != null;
-
-            // Добавляем данные в список
-            modelData.Add(new FamilyData
-            {
-                FUID = fuid,
-                FamilyName = family.Name,
-                Types = familyTypes.Select(t => new FamilyType { TypeName = t.Name }).ToList(),
-                IsActual = isActual
-            });
-        }
-
-        // Сохраняем обновленные данные
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
-        File.WriteAllText(_modelJsonPath, JsonSerializer.Serialize(modelData, options));
-
-        return modelData;
     }
-    catch (Exception ex)
-    {
-        TaskDialog.Show("Ошибка", $"Ошибка при проверке актуальности семейств: {ex.Message}");
-        return new List<FamilyData>();
-    }
-}
-    
+
     private List<FamilyData> ReadJsonFile(string filePath)
     {
         try
@@ -110,7 +124,7 @@ public class FamilyChecker
             return null;
         }
     }
-    
+
     private List<ElementType> GetFamilyTypes(Document doc, Family family)
     {
         return family.GetFamilySymbolIds()

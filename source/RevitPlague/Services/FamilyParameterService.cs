@@ -21,7 +21,7 @@ public class FamilyParameterService : IFamilyParameterService
 
         foreach (FamilyType type in familyManager.Types)
         {
-            if (!string.IsNullOrEmpty(type.Name)) // Игнорируем пустые типы
+            if (!string.IsNullOrEmpty(type.Name) && type.Name != " ") // Игнорируем пустые типы
             {
                 types.Add(new LibraryFamilyTypeData
                 {
