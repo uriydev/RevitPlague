@@ -72,8 +72,12 @@ public class FamilyHashCommand : IExternalCommand
             // Собираем геометрию для хэширования (подсчет объектов геометрии)
             string geometryHash = GetGeometryHash(familyDoc);
 
-            // Выводим первые 8 символов каждого хэша
-            TaskDialog.Show("Hashes", $"Хэш параметров (первые 8 символов): {parametersHash.Substring(0, 8)}\nХэш типов (первые 8 символов): {typesHash.Substring(0, 8)}\nХэш геометрии (первые 8 символов): {geometryHash.Substring(0, 8)}");
+            // Объединяем все хэши в одну строку и вычисляем новый хэш
+            string combinedHashData = parametersHash + typesHash + geometryHash;
+            string combinedHash = CalculateHash(combinedHashData);
+
+            // Выводим объединённый хэш
+            TaskDialog.Show("Combined Hash", $"Объединённый хэш (первые 8 символов): {combinedHash.Substring(0, 8)}");
 
             familyDoc.Close(false);
             return Result.Succeeded;
